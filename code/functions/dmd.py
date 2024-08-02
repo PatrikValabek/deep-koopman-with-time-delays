@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Dynamic Mode Decomposition (DMD) in scikkit-learn API.
 
 This module contains the implementation of the Online DMD, Windowed DMD,
