@@ -18,7 +18,33 @@ References:
 from typing import Union
 
 import numpy as np
-import scipy as sp
+
+
+def _sort_svd(U, S, Vt):
+    """Sort the singular value decomposition in descending order.
+
+    As sparse SVD does not guarantee the order of the singular values, we
+    need to sort the singular value decomposition in descending order.
+    """
+    sort_idx = np.argsort(S)[::-1]
+    if not np.array_equal(sort_idx, range(len(S))):
+        S = S[sort_idx]
+        U = U[:, sort_idx]
+        Vt = Vt[sort_idx, :]
+    return U, S, Vt
+
+
+def _truncate_svd(U, S, Vt, n_components):
+    """Truncate the singular value decomposition to the n components.
+
+    Full SVD returns the full matrices U, S, and V in correct order. If the
+    result acqisition is faster than sparse SVD, we combine the results of
+    full SVD with truncation.
+    """
+    U = U[:, :n_components]
+    S = S[:n_components]
+    Vt = Vt[:n_components, :]
+    return U, S, Vt
 
 
 class DMD:
@@ -78,7 +104,11 @@ class DMD:
         # u_, sigma, v = np.linalg.svd(X, full_matrices=False)
         # # Truncate the singular value matrices
         if r < self.m:
-            u_, sigma, v = sp.sparse.linalg.svds(X, k=r)
+            # u_, sigma, v = sp.sparse.linalg.svds(X, k=r)
+            # u_, sigma, v = _sort_svd(u_, sigma, v)
+            u_, sigma, v = np.linalg.svd(X, full_matrices=False)
+            u_, sigma, v = _truncate_svd(u_, sigma, v, r)
+
         else:
             u_, sigma, v = np.linalg.svd(X, full_matrices=False)
         # u_, sigma, v = u_[:, :r], sigma[:r], v[:r, :]
@@ -218,7 +248,7 @@ class DMDwC(DMD):
         if forecast != 1 and U.shape[0] != forecast:
             raise ValueError(
                 "u must have forecast number of time steps.\n"
-                f"u: {U.shape[1]}, forecast: {forecast}"
+                f"u: {U.shape[0]}, forecast: {forecast}"
             )
 
         mat = np.zeros((forecast + 1, self.m - self.l))
