@@ -16,32 +16,116 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
+\DeclareMathOperator{\argmin}{arg\;min}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\diag}{diag}
+\newcommand{\ui}[2]{#1_{\text{#2}}}
+\newcommand{\uis}[2]{#1^{\text{#2}}}
+\newcommand{\lrp}[1]{\left( #1 \right)}
+\newcommand{\uib}[2]{{\bf #1}_{\text #2}}
+\newcommand{\Ts}{\ui{T}{s}}
+
+%% NN controller commands
+\newcommand{\cnn}{\ui{\mathcal{C}}{NN}}
+\newcommand{\fddpg}{\ui{f}{E}}
+\newcommand{\uddpg}{\ui{u}{E}}
+\newcommand{\actor}{\ui{f}{ACT}}
+\newcommand{\critic}{\ui{f}{CRIT}}
+\newcommand{\thx}{\ui{\theta}{x}}
+\newcommand{\thf}{\ui{\theta}{f}}
+\newcommand{\ucorr}{\widetilde{u}}
+\newcommand{\unn}{\ui{u}{nn}}
+\newcommand{\uact}{\ui{u}{ACT}}
+\newcommand{\corr}{\ui{\mathcal{C}}{C}}
+\newcommand{\todo}[1]{{{\color{red} TODO: #1	}} }
+\renewcommand{\mark}[1]{{{\color{red} #1	}} }
+%\newcommand{\e}[1]{\cdot 10^{#1}}
+
+% \newtheorem{example}{Example}[section]
+
+%%-------------------------------------------------------
+%% MACRO for tikz picture. DO NOT CHANGE ANYTHING !!!!!
+\usepackage{tikz}
+\usepackage{pgfkeys}
+\usepackage{calc}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+\usepgflibrary{arrows}
+\usetikzlibrary{positioning}
+\usetikzlibrary{intersections}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{patterns,decorations.pathmorphing,decorations.markings}
+\usetikzlibrary{external}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepgfplotslibrary{patchplots}
+\usepackage{grffile}
+\usepgfplotslibrary{fillbetween}
+\usepackage{xfrac}
+%\tikzexternalize
+
+\newcommand{\includetikz}[1]{%
+\tikzifexternalizing{%
+\def\DOIT{1}%
+}{%
+\IfFileExists{#1.pdf}{%
+\includegraphics[scale=1]{#1.pdf}%
+\def\DOIT{0}%
+}{%
+\def\DOIT{1}%
+}%
+}%
+%
+\if1\DOIT
+%	\tikzsetnextfilename{mypic_#1}%
+\tikzsetnextfilename{#1}
+%   \filemodCmp{#1.tikz}{external/#1.log}%
+%  {\tikzset{external/force remake=true}\input{#1.tikz}}
+\input{#1.tikz}
+\fi
+}
+
+% defines lengths for figure plotting
+\newlength\figureheight
+\newlength\figurewidth
+%%  End of TikZ Macros
+%%------------------------------------------------------
 % upright sub-index
-\newcommand{\ui}[2]{#1 _{\text{#2}}}
+% \newcommand{\ui}[2]{#1 _{\text{#2}}}
 % upright sub-index with variable
-\newcommand{\uis}[3]{#1 _{\text{#2}, #3}}
+% \newcommand{\uis}[3]{#1 _{\text{#2}, #3}}
 
 \begin{document}
 
 \title{DNN-based Dictionary-Free Method for Identifying Linear Model of Nonlinear System with Input Delay\\
-    \thanks{Identify applicable funding agency here. If none, delete this.}
+    
+\thanks{\todo{The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants VEGA 1/0490/23, the Slovak Research and Development Agency under the project APVV-21-0019 and APVV-20-0261. This paper is also funded by the European Union’s Horizon Europe under grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries).}}
 }
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Patrik Valábek}
-    \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
-        \textit{Slovak University of Technology in Bratislava}\\
-        patrik.valabek@stuba.sk}
-    \and
-    \IEEEauthorblockN{2\textsuperscript{nd} Marek Wadinger}
-    \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
-        \textit{Slovak University of Technology in Bratislava}\\
-        0000--0002--0167--6331}
-    \and
-    \IEEEauthorblockN{3\textsuperscript{rd} Martin Klaučo}
-    \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
-        \textit{Slovak University of Technology in Bratislava}\\
-        0000--0003--0098--2625}
+\author{\IEEEauthorblockN{Patrik Val\'{a}bek, Marek Wadinger, Martin Klau\v{c}o}
+\IEEEauthorblockA{\textit{Institute of Information Engineering, Automation, and Mathematics} \\
+\textit{Slovak University of Technology in Bratislava}\\
+Bratislava, Slovakia \\
+\texttt{patrik.valabek@stuba.sk}}
 }
+% \author{\IEEEauthorblockN{1\textsuperscript{st} Patrik Valábek}
+%     \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
+%         \textit{Slovak University of Technology in Bratislava}\\
+%         patrik.valabek@stuba.sk}
+%     \and
+%     \IEEEauthorblockN{2\textsuperscript{nd} Marek Wadinger}
+%     \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
+%         \textit{Slovak University of Technology in Bratislava}\\
+%         0000--0002--0167--6331}
+%     \and
+%     \IEEEauthorblockN{3\textsuperscript{rd} Martin Klaučo}
+%     \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
+%         \textit{Slovak University of Technology in Bratislava}\\
+%         0000--0003--0098--2625}
+% }
 
 \maketitle
 
