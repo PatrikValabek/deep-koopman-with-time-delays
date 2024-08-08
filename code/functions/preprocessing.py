@@ -94,6 +94,60 @@ def hankel(
     return hX
 
 
+def time_shift(
+    X: np.ndarray | pd.DataFrame,
+    shift: int,
+    step: int = 1,
+    cut_rollover: bool = True,
+) -> np.ndarray | pd.DataFrame:
+    """Shift the columns of a matrix by a given number of steps.
+
+    Args:
+        X (np.array): The input matrix.
+        shift (int): The number of steps to shift the columns.
+
+    Returns:
+        np.array: The shifted matrix.
+
+    Example:
+     >>> X = np.array([1., 2., 3., 4., 5.])
+    >>> time_shift(X, 3)
+    array([[1., 2., 3.],
+           [2., 3., 4.],
+           [3., 4., 5.],])
+    """
+    if shift == 0:
+        return X
+
+    if isinstance(X, pd.DataFrame):
+        feature_names_in_ = X.columns
+        index_in_ = X.index
+        X = X.values
+    else:
+        feature_names_in_ = None
+
+    if len(X.shape) > 1:
+        n = X.shape[1]
+    else:
+        n = 1
+
+    hX = np.empty((X.shape[0], shift * n))
+    for i in range(0, shift * n, n):
+        hX[:, i : i + n] = X if len(X.shape) > 1 else X.reshape(-1, 1)
+        X = np.roll(X, -step, axis=0)
+    if cut_rollover:
+        hX = hX[:-shift]
+    if feature_names_in_ is not None:
+        return pd.DataFrame(
+            hX,
+            columns=[
+                f"{f}_{i}" for i in range(shift) for f in feature_names_in_
+            ],
+            index=index_in_,
+        )
+    return hX
+
+
 def polynomial_extension(df: np.ndarray | pd.DataFrame, degree):
     if isinstance(df, pd.DataFrame):
         poly_features = pd.DataFrame()
