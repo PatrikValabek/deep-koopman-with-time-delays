@@ -1,5 +1,5 @@
 \documentclass[conference]{IEEEtran}
-\IEEEoverridecommandlockouts
+\IEEEoverridecommandlockouts{}
 % The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -21,8 +21,8 @@
 \DeclareMathOperator{\diag}{diag}
 \newcommand{\ui}[2]{#1_{\text{#2}}}
 \newcommand{\uis}[2]{#1^{\text{#2}}}
-\newcommand{\lrp}[1]{\left( #1 \right)}
-\newcommand{\uib}[2]{{\bf #1}_{\text #2}}
+\newcommand{\lrp}[1]{\left(#1 \right)}
+\newcommand{\uib}[2]{{\bf #1}_{\text{#2}}}
 \newcommand{\Ts}{\ui{T}{s}}
 
 %% NN controller commands
@@ -37,7 +37,7 @@
 \newcommand{\unn}{\ui{u}{nn}}
 \newcommand{\uact}{\ui{u}{ACT}}
 \newcommand{\corr}{\ui{\mathcal{C}}{C}}
-\newcommand{\todo}[1]{{{\color{red} TODO: #1	}} }
+\newcommand{\todo}[1]{{{\color{red} TODO:~#1	}} }
 \renewcommand{\mark}[1]{{{\color{red} #1	}} }
 %\newcommand{\e}[1]{\cdot 10^{#1}}
 
@@ -79,7 +79,7 @@
 }%
 }%
 %
-\if1\DOIT
+\if1\DOIT{}
 %	\tikzsetnextfilename{mypic_#1}%
 \tikzsetnextfilename{#1}
 %   \filemodCmp{#1.tikz}{external/#1.log}%
@@ -89,8 +89,8 @@
 }
 
 % defines lengths for figure plotting
-\newlength\figureheight
-\newlength\figurewidth
+\newlength\figureheight{}
+\newlength\figurewidth{}
 %%  End of TikZ Macros
 %%------------------------------------------------------
 % upright sub-index
@@ -102,7 +102,7 @@
 
 \title{DNN-based Dictionary-Free Method for Identifying Linear Model of Nonlinear System with Input Delay\\
 
-    \thanks{\todo{The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants VEGA 1/0490/23, the Slovak Research and Development Agency under the project APVV-21-0019 and APVV-20-0261. This paper is also funded by the European Union’s Horizon Europe under grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries).}}
+    \thanks{\todo{The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants VEGA 1/0490/23, the Slovak Research and Development Agency under the project APVV--21--0019 and APVV--20--0261. This paper is also funded by the European Union's Horizon Europe under grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries).}}
 }
 
 \author{\IEEEauthorblockN{Patrik Val\'{a}bek, Marek Wadinger, Martin Klau\v{c}o}
@@ -145,11 +145,9 @@ Koopman analysis, a technique that facilitates the linearization of nonlinear sy
 Finite-dimensional approximations of the Koopman operator are often achieved using Dynamic Mode Decomposition (DMD), introduced by Schmid. While DMD identifies spatio-temporal coherent structures from high-dimensional systems, it typically fails to capture nonlinear transients due to its reliance on linear measurements. To address this, Extended DMD (eDMD) incorporates nonlinear measurements, improving its capability to model nonlinear systems. However, eDMD faces challenges such as high dimensionality and closure issues, which arise because there is no guarantee that the nonlinear measurements form a Koopman invariant subspace~\cite{Lusch2018}. Consequently, the identification and representation of Koopman eigenfunctions remain crucial tasks, motivating the use of advanced deep learning techniques.
 
 To overcome the limitations of eDMD, deep neural networks (DNNs) have been employed to learn Koopman operator representations. DNNs remove the bottleneck of predefined dictionaries by creating linear representations of a system through nonlinear transformations of individual neurons. These neurons combine to form complex functions parametrized by tunable weights and biases, allowing the network to adaptively learn the optimal transformations during training. This approach significantly enhances the fidelity of Koopman operator models, particularly in multi-step prediction tasks, thus improving long-term forecasting of nonlinear dynamics~\cite{Yeung2019}.
-\begin{figure*}
-    \centering
-    \includegraphics[width = \linewidth]{figures/derek_scheme.pdf}
+\begin{figure*}\label{fig:derek_scheme}
+    \centerline{\includegraphics[width = \linewidth]{figures/derek_scheme.pdf}}
     \caption{\todo{The DeReK algorithm architecture. The model is built on the autoencoder architecture of the DKO. The history of state and input data is first extracted using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the last state as input to the autoencoder part. The autoencoder part remains the same as for the DKO.}}
-    \label{fig:derek_scheme}
 \end{figure*}
 An important aspect of modeling dynamical systems is accounting for time-delays, which are common in many physical and industrial processes. Time-delay can significantly affect system behavior and control performance. Introducing time-delayed embeddings of control action in DMD improves identification of system with input delays, while does not explicitly identify the time-delays. Various methods exist to identify and model time-delays, including state-space realization approaches and correlation analysis. The state-space realization approach involves constructing a state-space representation based on input-output data from experiments, extracting time-delay information from the system's impulse response~\cite{Lima2015254}. Correlation analysis, on the other hand, focuses on identifying time-delays in dynamic processes with disturbances, aiming to improve control accuracy and stability~\cite{Li201792}.
 
@@ -172,7 +170,7 @@ DRKO, by adding an LSTM layer, processes the history of measurements. As a resul
 \subsection{Implementation of Deep Recurrent Koopman (DeReK)}
 DeReK was implemented in the Python programming language using the NeuroMANCER~\cite{Neuromancer2023} library. NeuroMANCER stands for Neural Modules with Adaptive Nonlinear Constraints and Efficient Regularizations. It is an open-source differentiable programming (DP) library for solving parametric constrained optimization problems, physics-informed system identification, and parametric model-based optimal control. NeuroMANCER is written in PyTorch and allows for systematically integrating machine learning with scientific computing to create end-to-end differentiable models and algorithms embedded with prior knowledge and physics.
 
-There exists "Learning Stable Deep Koopman Operators" and "Learning Stable Control-oriented Deep Koopman Operators" examples based on~\cite{shi2022deep, korda2020optimal,lusch2018deep} which served as a base for our implementation and comparison of the DeReK model. Also, they provided implementation for learning stable Koopman operator based on Generic Stable Layers~\cite{skomski2021constrained, drgovna2022dissipative, zhang2018stabilizing} for constrained learning of NN. Also, implementing the control input in the model needed to be changed. Both models were implemented with the control input not encoded to be further compatible with Koopman MPC~\cite{korda2018linear}.
+There exists ``Learning Stable Deep Koopman Operators'' and ``Learning Stable Control-oriented Deep Koopman Operators'' examples based on~\cite{shi2022deep, korda2020optimal,lusch2018deep} which served as a base for our implementation and comparison of the DeReK model. Also, they provided implementation for learning stable Koopman operator based on Generic Stable Layers~\cite{skomski2021constrained, drgovna2022dissipative, zhang2018stabilizing} for constrained learning of NN. Also, implementing the control input in the model needed to be changed. Both models were implemented with the control input not encoded to be further compatible with Koopman MPC~\cite{korda2018linear}.
 
 The NeuroMANCER does not provide the use of LSTM layers, so we implemented them into the library. This opens the door to further research and development using this library with LSTM layers.
 
@@ -199,8 +197,7 @@ is the mean squared error between the predicted state \(\hat{x}_{k+1}\) and the 
 \end{subequations}
 where \(u_k\) is the input flow rate at time \(k\), the \(A_\mathcal{K}\) and \(B_\mathcal{K}\) are the identified Koopman matrices.
 
-\paragraph*{Output trajectory prediction loss}
-\label{par:output_loss}
+\paragraph*{Output trajectory prediction loss}\label{par:output_loss}
 is the mean squared error between the predicted trajectory \(\hat{x}_{k+1:k+N}\) and the true trajectory \(x_{k+1:k+N}\):
 \begin{subequations}
     \begin{align}
@@ -249,18 +246,18 @@ The experimental data were acquired by simulating this system at sampling period
 
 The data were split into training and testing sets with a ratio of 50:50. The training set was used to train the models, while the testing set was used to evaluate their performance. The models were trained to predict the water levels in tanks 1 and 2 for the whole testing set based on the applied input flow rate and the initial state of the system.
 
-eDMD used dictionary of polynomials up to degree 2, square root and inversion of the water levels, and time-delayed embeddings of the input flow rate composed of previous 20 samples. Lifted states were obtained by concatenating the dictionary terms and time-delayed embeddings, and the Koopman matrix was learned using eDMD.
+eDMD uses dictionary of polynomials up to degree 2 and square root of the water levels, and time-delayed embeddings of the input flow rate composed of previous 20 samples. For comparison, eDMD without square root of the water levels was also used, simulating situation where the true nonlinear terms are not known, therefore, they are not included in the dictionary. Lifted states were obtained by concatenating the dictionary terms and time-delayed embeddings, and the Koopman matrix was learned using eDMD.
 
 The DeReK model consists of an LSTM layer with one hidden layer with 8 units, to extracts information about the time delays in the system from the history of the system. The concatenated information is then transformed to lifted states using an encoder layer with a fully connected network. The lifted states are further concatenated with the input flow rate using another concatenation layer.
 
-Figure~\ref{fig:two_tanks_results} shows the predicted and actual water levels in tanks 1 and 2 for the two tank system using eDMD and DeReK. The results demonstrate that DeReK outperforms eDMD in terms of prediction accuracy, capturing the system's dynamics more effectively over the testing set. eDMD exhibits systematic positive bias in the prediction of water levels, while DeReK provides more accurate and consistent predictions. Nevertheless, the linear model generated by DeReK displays non-minimum phase behavior, which is a common issue in identification of systems with input delays.
+Figure~\ref{fig:two_tanks_results} shows the predicted and actual water levels in tanks 1 and 2 for the two tank system using DeReK and eDMD with and without square root of the water levels. The results demonstrate that DeReK outperforms eDMD, which does not include true nonlinear behavior, in terms of prediction accuracy, capturing the system's dynamics more effectively over the testing set. eDMD without square root of the water levels exhibits systematic overestimation of influence of input flow rate step change, leading to positive bias in the prediction of water levels, while DeReK provides more accurate and consistent predictions. Nevertheless, the linear model generated by DeReK displays non-minimum phase behavior, which is a common issue in identification of systems with input delays. Meanwhile, eDMD with square root of the water levels provides accurate prediction, as it includes the true nonlinear terms in the dictionary, thanks to prior knowledge of the system's dynamics.
 
 \begin{figure}[htbp]\label{fig:two_tanks_results}
     \centerline{\includegraphics[width=\linewidth]{figures/dmdc_multipred-p0-q0-hm20-hl0.pdf}}
     \caption{Predicted and actual water levels in tanks 1 and 2 for the two tank system}
 \end{figure}
 
-The performance of the models was evaluated using the mean absolute error (MAE) and the sum of the absolute differences (SAD) between the predicted and actual water levels in tanks 1 and 2. The results are presented in Table~\ref{tab:two_tanks_results}. DeReK achieved a significantly lower MAE and SAD compared to eDMD, indicating its superior performance in modeling the two tank system with input delays.
+The performance of the models was evaluated using the mean absolute error (MAE) and the sum of the absolute differences (SAD) between the predicted and actual water levels in tanks 1 and 2. The results are presented in Table~\ref{tab:two_tanks_results}. DeReK achieved a significantly lower MAE and SAD compared to eDMD without square root, indicating its superior performance in modeling the two tank system with input delays in cases where true nonlinear dynamics are not known. Meanwhile, DeReK provides comparable results to eDMD with square root, demonstrating its effectiveness in capturing the system's dynamics without prior knowledge of the true nonlinear terms, demonstrating the capabilities of the DeReK model in modeling nonlinear systems with input delays.
 
 \begin{table}[htbp]\label{tab:two_tanks_results}
     \caption{Performance comparison of DeReK and eDMD on the two tank system with input delays}
@@ -269,15 +266,23 @@ The performance of the models was evaluated using the mean absolute error (MAE) 
             \toprule
             \textbf{Model}              & \textbf{MAE} & \textbf{SAD} \\
             \midrule
-            eDMD (with \(\sqrt{x}\))    & 0.1737       & 170.24       \\
-            eDMD (without \(\sqrt{x}\)) & 0.6058       & 593.70       \\
             DeReK                       & 0.2005       & 196.51       \\
+            eDMD (without \(\sqrt{x}\)) & 0.6058       & 593.70       \\
+            eDMD (with \(\sqrt{x}\))    & 0.1737       & 170.24       \\
             \bottomrule
         \end{tabular}
     \end{center}
 \end{table}
 
+Lastly, we compare the eigenvalues of the Koopman operator for the two tank system using DeReK and eDMD. Figure~\ref{fig:two_tanks_eigs} shows that DeReK provides more accurate and consistent eigenvalues with original eigenvalues compared to eDMD.
 
+\begin{figure}[htbp]\label{fig:two_tanks_eigs}
+    \centerline{\includegraphics[width=\linewidth]{figures/eigenvalues_comparison.pdf}}
+    \caption{Comparison of eigenvalues of the Koopman operator for the two tank system}
+\end{figure}
+
+\section{Conclusion}
+This paper presents a novel dictionary-free method for identifying linear representations of nonlinear systems with input delays using deep neural networks. The DeReK model leverages the strengths of deep learning to generate and update nonlinear transformations, enabling the learning of high-fidelity Koopman operator models. By incorporating LSTM, DeReK ensures precise modeling and improved long-term forecasting of nonlinear dynamics with input delays. The results demonstrate that DeReK outperforms traditional eDMD in cases where true dynamics is not anticipated in dictionary, showing ability to capture the system's dynamics more effectively, while providing accurate and consistent predictions with eDMD where true dynamics is known. Future work will focus on extending the DeReK model to more complex systems and exploring its applications in model predictive control.
 
 \bibliographystyle{IEEEtran}
 \bibliography{main}
