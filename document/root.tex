@@ -101,15 +101,15 @@
 \begin{document}
 
 \title{DNN-based Dictionary-Free Method for Identifying Linear Model of Nonlinear System with Input Delay\\
-    
-\thanks{\todo{The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants VEGA 1/0490/23, the Slovak Research and Development Agency under the project APVV-21-0019 and APVV-20-0261. This paper is also funded by the European Union’s Horizon Europe under grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries).}}
+
+    \thanks{\todo{The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants VEGA 1/0490/23, the Slovak Research and Development Agency under the project APVV-21-0019 and APVV-20-0261. This paper is also funded by the European Union’s Horizon Europe under grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries).}}
 }
 
 \author{\IEEEauthorblockN{Patrik Val\'{a}bek, Marek Wadinger, Martin Klau\v{c}o}
 \IEEEauthorblockA{\textit{Institute of Information Engineering, Automation, and Mathematics} \\
-\textit{Slovak University of Technology in Bratislava}\\
-Bratislava, Slovakia \\
-\texttt{patrik.valabek@stuba.sk}}
+    \textit{Slovak University of Technology in Bratislava}\\
+    Bratislava, Slovakia \\
+    \texttt{patrik.valabek@stuba.sk}}
 }
 % \author{\IEEEauthorblockN{1\textsuperscript{st} Patrik Valábek}
 %     \IEEEauthorblockA{\textit{Department of Information Engineering and Process Control} \\
@@ -146,10 +146,10 @@ Finite-dimensional approximations of the Koopman operator are often achieved usi
 
 To overcome the limitations of eDMD, deep neural networks (DNNs) have been employed to learn Koopman operator representations. DNNs remove the bottleneck of predefined dictionaries by creating linear representations of a system through nonlinear transformations of individual neurons. These neurons combine to form complex functions parametrized by tunable weights and biases, allowing the network to adaptively learn the optimal transformations during training. This approach significantly enhances the fidelity of Koopman operator models, particularly in multi-step prediction tasks, thus improving long-term forecasting of nonlinear dynamics~\cite{Yeung2019}.
 \begin{figure*}
-	\centering
-	\includegraphics[width = \linewidth]{figures/derek_scheme.pdf}
-	\caption{\todo{The DeReK algorithm architecture. The model is built on the autoencoder architecture of the DKO. The history of state and input data is first extracted using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the last state as input to the autoencoder part. The autoencoder part remains the same as for the DKO.}}
-	\label{fig:derek_scheme}
+    \centering
+    \includegraphics[width = \linewidth]{figures/derek_scheme.pdf}
+    \caption{\todo{The DeReK algorithm architecture. The model is built on the autoencoder architecture of the DKO. The history of state and input data is first extracted using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the last state as input to the autoencoder part. The autoencoder part remains the same as for the DKO.}}
+    \label{fig:derek_scheme}
 \end{figure*}
 An important aspect of modeling dynamical systems is accounting for time-delays, which are common in many physical and industrial processes. Time-delay can significantly affect system behavior and control performance. Introducing time-delayed embeddings of control action in DMD improves identification of system with input delays, while does not explicitly identify the time-delays. Various methods exist to identify and model time-delays, including state-space realization approaches and correlation analysis. The state-space realization approach involves constructing a state-space representation based on input-output data from experiments, extracting time-delay information from the system's impulse response~\cite{Lima2015254}. Correlation analysis, on the other hand, focuses on identifying time-delays in dynamic processes with disturbances, aiming to improve control accuracy and stability~\cite{Li201792}.
 
@@ -161,20 +161,20 @@ This paper presents a dictionary-free method for learning linear representations
 
 Deep Recurrent Koopman (DeReK) is a novel approach for data-based identification of approximation of the Koopman operator. It can accurately identify the linear model for processes with time delays. Its basis comes from the Deep Koopman Operator (DKO)~\cite{lusch2018deep} approach.
 
-The DeReK is built to approximate the Koopman operator for the systems with time delays. Thanks to the LSTM layer that processes the system's history denoted $H$, we can effectively capture the time delays in the system. Time delays are encoded as the hidden states of the last LSTM layer denoted $h_k$. Thanks to this encoding (hidden states of LSTM), we can obtain the relevant information about the system's past. 
+The DeReK is built to approximate the Koopman operator for the systems with time delays. Thanks to the LSTM layer that processes the system's history denoted \(H\), we can effectively capture the time delays in the system. Time delays are encoded as the hidden states of the last LSTM layer denoted \(h_k\). Thanks to this encoding (hidden states of LSTM), we can obtain the relevant information about the system's past.
 
 For example, using the LSTM layer, we can obtain the chosen number (this is a hyperparameter) of hidden states. These hidden states are then used as input to the encoder part of our approach. This way, we can reduce the amount of input data to the model compared to the Deep Koopman model, which would take the whole history of the system as input. This would be very inefficient and computationally more expensive.
 
-Also, compared to the DMD, where we would use the history of measurements, we can have a smaller Koopman matrix $\mathcal{K}$. Considering, for example, the last $\ui{l}{his}$ measurements of the system states $x \in \mathbb{R}^n$, the $A_\mathcal{K}$ would have the size $\ui{l}{his}n \times \ui{l}{his}n$ and the $B_\mathcal{K}$ would have the size $\ui{l}{his}n \times m$,  where $m$ is the number of inputs to the system $u \in \mathbb{R}^m$. This is often an unnecessary huge matrix and computationally expensive to compute and store if we are dealing with a long history and many states. On the other hand, the LSTM layer can capture the relevant information about the system's past and reduce the amount of input data in the model.
+Also, compared to the DMD, where we would use the history of measurements, we can have a smaller Koopman matrix \(\mathcal{K}\). Considering, for example, the last \(\ui{l}{his}\) measurements of the system states \(x \in \mathbb{R}^n\), the \(A_\mathcal{K}\) would have the size \(\ui{l}{his}n \times \ui{l}{his}n\) and the \(B_\mathcal{K}\) would have the size \(\ui{l}{his}n \times m\),  where \(m\) is the number of inputs to the system \(u \in \mathbb{R}^m\). This is often an unnecessary huge matrix and computationally expensive to compute and store if we are dealing with a long history and many states. On the other hand, the LSTM layer can capture the relevant information about the system's past and reduce the amount of input data in the model.
 
 DRKO, by adding an LSTM layer, processes the history of measurements. As a result, they could better approximate the nonlinear system model with time delay compared to DeSKO. This approach is different from the DeReK, where we are not using the probabilistic neural network or probabilistic recurrent neural networks. Also, the work does not use the autoencoder approach to the model's training; it only uses the NNs to get the probabilistic lifted states.
 
 \subsection{Implementation of Deep Recurrent Koopman (DeReK)}
 DeReK was implemented in the Python programming language using the NeuroMANCER~\cite{Neuromancer2023} library. NeuroMANCER stands for Neural Modules with Adaptive Nonlinear Constraints and Efficient Regularizations. It is an open-source differentiable programming (DP) library for solving parametric constrained optimization problems, physics-informed system identification, and parametric model-based optimal control. NeuroMANCER is written in PyTorch and allows for systematically integrating machine learning with scientific computing to create end-to-end differentiable models and algorithms embedded with prior knowledge and physics.
 
-There exists "Learning Stable Deep Koopman Operators" and "Learning Stable Control-oriented Deep Koopman Operators" examples based on~\cite{shi2022deep, korda2020optimal,lusch2018deep} which served as a base for our implementation and comparison of the DeReK model. Also, they provided implementation for learning stable Koopman operator based on Generic Stable Layers~\cite{skomski2021constrained, drgovna2022dissipative, zhang2018stabilizing} for constrained learning of NN. Also, implementing the control input in the model needed to be changed. Both models were implemented with the control input not encoded to be further compatible with Koopman MPC~\cite{korda2018linear}. 
+There exists "Learning Stable Deep Koopman Operators" and "Learning Stable Control-oriented Deep Koopman Operators" examples based on~\cite{shi2022deep, korda2020optimal,lusch2018deep} which served as a base for our implementation and comparison of the DeReK model. Also, they provided implementation for learning stable Koopman operator based on Generic Stable Layers~\cite{skomski2021constrained, drgovna2022dissipative, zhang2018stabilizing} for constrained learning of NN. Also, implementing the control input in the model needed to be changed. Both models were implemented with the control input not encoded to be further compatible with Koopman MPC~\cite{korda2018linear}.
 
-The NeuroMANCER does not provide the use of LSTM layers, so we implemented them into the library. This opens the door to further research and development using this library with LSTM layers. 
+The NeuroMANCER does not provide the use of LSTM layers, so we implemented them into the library. This opens the door to further research and development using this library with LSTM layers.
 
 The schematic of DeReK architecture can be seen in Fig.~\ref{fig:derek_scheme}. The model is built on the autoencoder architecture of the DKO. The history of state and input data is first encoded using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the last state as input to the autoencoder part. The autoencoder part remains the same as for the DKO.
 
@@ -182,43 +182,43 @@ The schematic of DeReK architecture can be seen in Fig.~\ref{fig:derek_scheme}. 
 In the training of the DeReK model, we are also using the same loss function as in the training of the DKO model. The loss function combines the reconstruction loss, one-step output prediction loss, output trajectory prediction loss, and latent trajectory prediction loss. These loss functions are described in the~\cite{lusch2018deep}. This function is one of the most important parts of the training process. Compared to DMD, where the loss function is only the mean squared error between the predicted and true future states for a one-step prediction, the Deep Koopman methods also use a multi-step prediction in a loss function. In identifying a system, by using the multi-step prediction, we can better capture the system's dynamics with input delays as opposed to only one-step prediction loss.
 
 \paragraph*{Reconstruction loss}
-is the mean squared error between the state $x_k$ and the encoded (lifted) and decoded (unlifted) state $g^{-1}(g(x_k))$:
+is the mean squared error between the state \(x_k\) and the encoded (lifted) and decoded (unlifted) state \(g^{-1}(g(x_k))\):
 \begin{equation}
     \mathcal{L}_{\text{rec}} = \left\|x_k - g^{-1}(g(x_k))\right\|^2.
 \end{equation}
 This loss is the basic loss function for the autoencoder part of the model. It ensures that we can correctly encode and decode the state of the system.
 
 \paragraph*{One step output prediction loss}
-is the mean squared error between the predicted state $\hat{x}_{k+1}$ and the true state $x_{k+1}$:
+is the mean squared error between the predicted state \(\hat{x}_{k+1}\) and the true state \(x_{k+1}\):
 
 \begin{subequations}
     \begin{align}
-        \mathcal{L}_{\text{step}} &= \left\|\hat{x}_{k+1} - x_{k+1}\right\|^2, \\
-        \hat{x}_{k+1} &= g^{-1}(A_\mathcal{K}g(x_k) + B_\mathcal{K}u_k),
+        \mathcal{L}_{\text{step}} & = \left\|\hat{x}_{k+1} - x_{k+1}\right\|^2,       \\
+        \hat{x}_{k+1}             & = g^{-1}(A_\mathcal{K}g(x_k) + B_\mathcal{K}u_k),
     \end{align}
 \end{subequations}
-where $u_k$ is the input flow rate at time $k$, the $A_\mathcal{K}$ and $B_\mathcal{K}$ are the identified Koopman matrices.
+where \(u_k\) is the input flow rate at time \(k\), the \(A_\mathcal{K}\) and \(B_\mathcal{K}\) are the identified Koopman matrices.
 
 \paragraph*{Output trajectory prediction loss}
 \label{par:output_loss}
-is the mean squared error between the predicted trajectory $\hat{x}_{k+1:k+N}$ and the true trajectory $x_{k+1:k+N}$:
+is the mean squared error between the predicted trajectory \(\hat{x}_{k+1:k+N}\) and the true trajectory \(x_{k+1:k+N}\):
 \begin{subequations}
     \begin{align}
-        \mathcal{L}_{\text{pred}} &= \sum_{i=1}^{N}\left\|\hat{x}_{k+i} - x_{k+i}\right\|^2, \\
-        \hat{x}_{k+i} &= g^{-1}\left(A_\mathcal{K}g(\hat{x}_{k+i-1}) + B_\mathcal{K}u_{k+i-1}\right), \\
-        \hat{x}_{k} &= x_{k},
+        \mathcal{L}_{\text{pred}} & = \sum_{i=1}^{N}\left\|\hat{x}_{k+i} - x_{k+i}\right\|^2,                      \\
+        \hat{x}_{k+i}             & = g^{-1}\left(A_\mathcal{K}g(\hat{x}_{k+i-1}) + B_\mathcal{K}u_{k+i-1}\right), \\
+        \hat{x}_{k}               & = x_{k},
     \end{align}
 \end{subequations}
-where $N$ is the prediction horizon specified by a user. In this case, the predicted trajectory $\hat{x}_{k:k+N}$ is predicted based on the $x_k$ and the input trajectory $u_{k:k+N-1}$. This loss function is used to capture the dynamics of the system and also input delays. By using the multi-step prediction loss, we can better capture the dynamics of the system as opposed to only one-step prediction loss.
+where \(N\) is the prediction horizon specified by a user. In this case, the predicted trajectory \(\hat{x}_{k:k+N}\) is predicted based on the \(x_k\) and the input trajectory \(u_{k:k+N-1}\). This loss function is used to capture the dynamics of the system and also input delays. By using the multi-step prediction loss, we can better capture the dynamics of the system as opposed to only one-step prediction loss.
 
 \paragraph*{Latent trajectory prediction loss}
-is the mean squared error between the lifted predicted trajectory $\hat{z}_{k+1:k+N}$ and the lifted true trajectory $z_{k+1:k+N}$:
+is the mean squared error between the lifted predicted trajectory \(\hat{z}_{k+1:k+N}\) and the lifted true trajectory \(z_{k+1:k+N}\):
 \begin{subequations}
     \begin{align}
-        \mathcal{L}_{\text{lpred}} &= \sum_{k=1}^{N}\left\|\hat{z}_{k+i} - z_{k+i}\right\|^2, \\
-        z_{k+i} &= g(x_{k+i}), \\
-        \hat{z}_{k+i} &= A_{\mathcal{K}}\hat{z}_{k+i-1}+B_{\mathcal{K}}u_{k+i-1},\\
-        \hat{z}_{k} &= g(x_{k}),
+        \mathcal{L}_{\text{lpred}} & = \sum_{k=1}^{N}\left\|\hat{z}_{k+i} - z_{k+i}\right\|^2,  \\
+        z_{k+i}                    & = g(x_{k+i}),                                              \\
+        \hat{z}_{k+i}              & = A_{\mathcal{K}}\hat{z}_{k+i-1}+B_{\mathcal{K}}u_{k+i-1}, \\
+        \hat{z}_{k}                & = g(x_{k}),
     \end{align}
 \end{subequations}
 where this loss function works with the same principle as the output trajectory prediction loss~\ref{par:output_loss}, but in the space of lifted states.
@@ -227,7 +227,7 @@ The final loss function is a weighted sum of all the loss functions:
 \begin{equation}
     \mathcal{L} = \ui{w}{rec}\mathcal{L}_{\text{rec}} + \ui{w}{step}\mathcal{L}_{\text{step}} + \ui{w}{pred}\mathcal{L}_{\text{pred}} + \ui{w}{lpred}\mathcal{L}_{\text{lpred}},
 \end{equation}
-where $\ui{w}{rec}$, $\ui{w}{step}$, $\ui{w}{pred}$, and $\ui{w}{lpred}$ are the weights for the reconstruction loss, one-step output prediction loss, output trajectory prediction loss, and latent trajectory prediction loss, respectively. They are set by the user and are used to balance the importance of the loss functions in the training process.
+where \(\ui{w}{rec}\), \(\ui{w}{step}\), \(\ui{w}{pred}\), and \(\ui{w}{lpred}\) are the weights for the reconstruction loss, one-step output prediction loss, output trajectory prediction loss, and latent trajectory prediction loss, respectively. They are set by the user and are used to balance the importance of the loss functions in the training process.
 
 
 \section{Results}
