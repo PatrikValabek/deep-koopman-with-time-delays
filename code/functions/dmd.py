@@ -100,30 +100,26 @@ class DMD:
     def _fit(self, X: np.ndarray, Y: np.ndarray):
         # Perform singular value decomposition on X
         r = self.r if self.r > 0 else self.m
-        # u_, sigma, v = np.linalg.svd(X, full_matrices=False)
         # # Truncate the singular value matrices
-        if r < self.m:
-            # u_, sigma, v = sp.sparse.linalg.svds(X, k=r)
-            # u_, sigma, v = _sort_svd(u_, sigma, v)
-            u_, sigma, v = np.linalg.svd(X, full_matrices=False)
-            u_, sigma, v = _truncate_svd(u_, sigma, v, r)
-
-        else:
-            u_, sigma, v = np.linalg.svd(X, full_matrices=False)
-        # u_, sigma, v = u_[:, :r], sigma[:r], v[:r, :]
-        sigma_inv = np.reciprocal(sigma)
+        u_, s_, vt_ = np.linalg.svd(X, full_matrices=False)
+        u_, s_, vt_ = _truncate_svd(u_, s_, vt_, r)
+        self._u = u_
+        ut_ = u_.conj().T
+        v_ = vt_.conj().T
+        s_inv = np.diag(np.reciprocal(s_))
         # Compute the low-rank approximation of Koopman matrix
-        self.A_bar = u_.conj().T @ Y @ v.conj().T @ np.diag(sigma_inv)
+        self.A_bar = ut_ @ Y @ v_ @ s_inv
 
         # Perform eigenvalue decomposition on A
         self.Lambda, W = np.linalg.eig(self.A_bar)
 
         # Compute the coefficient matrix
         # TODO: Find out whether to use X or Y (X usage ~ u @ W obviously)
-        # self.Phi = X @ v[: r, :].conj().T @ np.diag(sigma_inv) @ W
-        self.Phi = u_ @ W
+        # self.Phi = Y @ v.conj().T @ s_inv @ W
+        # self.Phi = u_ @ W
+        self.Phi = u_ @ s_inv @ W
         # self.A = self.Phi @ np.diag(self.Lambda) @ np.linalg.pinv(self.Phi)
-        self.A = Y @ v.conj().T @ np.diag(sigma_inv) @ u_.conj().T
+        self.A = Y @ v_ @ s_inv @ ut_
 
     def fit(self, X: np.ndarray, Y: Union[np.ndarray, None] = None):
         """
@@ -173,12 +169,33 @@ class DMD:
         return mat[1:, :]
 
 
-class DMDwC(DMD):
-    def __init__(self, r: int, B: Union[np.ndarray, None] = None):
-        super().__init__(r)
+class DMDc(DMD):
+    def __init__(
+        self, p: int = 0, q: int = 0, B: Union[np.ndarray, None] = None
+    ):
+        super().__init__(p + q if p + q > 0 else 0)
+        self.p = p
+        self.q = q
         self.B = B
         self.known_B = B is not None
         self.l: int
+
+    def _fit(self, X: np.ndarray, Y: np.ndarray):
+        # Perform singular value decomposition on Xß
+        r = self.r if self.r > 0 else self.p + self.q
+        # u_, s_, v = np.linalg.svd(X, full_matrices=False)
+        # # Truncate the singular value matrices
+        u_, s_, vt_ = np.linalg.svd(X, full_matrices=False)
+        import matplotlib.pyplot as plt
+
+        plt.plot(s_)
+        u_, s_, vt_ = _truncate_svd(u_, s_, vt_, r)
+        self._u = u_
+        ut_ = u_.conj().T
+        v_ = vt_.conj().T
+        s_inv = np.diag(np.reciprocal(s_))
+
+        self.A = Y @ v_ @ s_inv @ ut_
 
     def fit(
         self,
@@ -190,12 +207,12 @@ class DMDwC(DMD):
             super().fit(X, Y)
             return
         U_ = U.copy()
-        if not self.known_B:
-            X = np.hstack((X, U_))
         if Y is None:
             Y = X[1:, :]
             X = X[:-1, :]
             U_ = U_[:-1, :]
+        if not self.known_B:
+            X = np.hstack((X, U_))
 
         if X.shape[0] != U_.shape[0]:
             raise ValueError(
@@ -211,16 +228,18 @@ class DMDwC(DMD):
             self._Y = Y
         else:
             # Subtract the effect of actuation
-            self._Y = Y - self.B * U_[:, :-1]
+            self._Y = Y - self.B * U_
 
         self.l = U_.shape[0]
-        self.m, self.n = X.shape
+        self.m, self.n = Y.shape
+        self.p = self.p if self.p > 0 else self.m
+        self.q = self.q if self.q > 0 else self.l
 
-        super()._fit(X, self._Y)
+        self._fit(X, self._Y)
         if not self.known_B:
             # split K into state transition matrix and control matrix
-            self.B = self.A[: self.m - self.l, -self.l :]
-            self.A = self.A[: self.m - self.l, : -self.l]
+            self.B = self.A[: self.m, -self.l :]
+            self.A = self.A[: self.m, : -self.l]
 
     def predict(
         self,
