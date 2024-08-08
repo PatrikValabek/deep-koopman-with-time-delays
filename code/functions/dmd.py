@@ -79,47 +79,102 @@ class DMD:
         self.A: np.ndarray
         self._Y: np.ndarray
 
+        # Properties to be reset at each update
+        self._eig: tuple[np.ndarray, np.ndarray] | None = None
+        self._modes: np.ndarray | None = None
+        self._xi: np.ndarray | None = None
+
     @property
     def C(self) -> np.ndarray:
+        """Compute Discrete temporal dynamics matrix (Vandermonde matrix)."""
         return np.vander(self.Lambda, self.n, increasing=True)
 
     @property
+    def eig(self) -> tuple[np.ndarray, np.ndarray]:
+        """Compute and return DMD eigenvalues and DMD modes at current step"""
+        if self._eig is None:
+            Lambda, Phi = np.linalg.eig(self.A_bar)
+
+            sort_idx = np.argsort(Lambda)[::-1]
+            if not np.array_equal(sort_idx, range(len(Lambda))):
+                Lambda = Lambda[sort_idx]
+                Phi = Phi[:, sort_idx]
+            self._eig = Lambda, Phi
+        return self._eig
+
+    @property
+    def modes(self) -> np.ndarray:
+        """Reconstruct high dimensional discrete-time DMD modes"""
+        if self._modes is None:
+            _, Phi_comp = self.eig
+            if self.r < self.m:
+                # Exact DMD modes (Tu et al. (2016))
+                # self._Y.T @ self._svd._Vt.T is increasingly more computationally expensive without rolling
+                # self._modes = (
+                #     self._Y.T
+                #     @ self._svd._Vt.T  # sign may change if sparse SVD is used
+                #     @ np.diag(1 / self._svd._S)
+                #     @ Phi_comp  # sign may change if sparse EIG is used
+                # )
+
+                # Projected DMD modes (Schmid (2010)) - faster, not guaranteed
+                # self._modes = self._svd._U @ Phi_comp
+                # This regularization works much better than the above
+                #  if high variance in svs of X
+                self._modes = (
+                    self._u[: self.m] @ np.diag(1 / self._s) @ Phi_comp
+                )
+            else:
+                self._modes = Phi_comp
+        return self._modes
+
+    @property
     def xi(self) -> np.ndarray:
-        from scipy.optimize import minimize
+        if self._xi is None:
+            # r = self.r if self.r > 0 else self.m
+            # _, Phi = self.eig
+            # xi = self.Phi.conj().T @ self._Y @ np.linalg.pinv(self.C)
 
-        def objective_function(x):
-            return np.linalg.norm(
-                self._Y - self.Phi @ np.diag(x) @ self.C, "fro"
-            ) + 0.5 * np.linalg.norm(x, 1)
+            # from scipy.optimize import minimize
 
-        # Minimize the objective function
-        xi = minimize(objective_function, np.ones(self.m)).x
-        self._xi = xi
-        return self.xi
+            # def objective_function(x):
+            #     return np.linalg.norm(
+            #         self._Y[:r] - Phi @ np.diag(x) @ self.C, "fro"
+            #     ) + 0.5 * np.linalg.norm(x, 1)
+
+            # # Minimize the objective function
+            # xi = minimize(objective_function, np.ones(r)).x
+            xi = np.linalg.lstsq(
+                self.modes,
+                self._Y.T[0],
+                rcond=None,
+            )[0]
+            self._xi = np.abs(xi)
+        return self._xi
 
     def _fit(self, X: np.ndarray, Y: np.ndarray):
         # Perform singular value decomposition on X
         r = self.r if self.r > 0 else self.m
         # # Truncate the singular value matrices
-        u_, s_, vt_ = np.linalg.svd(X, full_matrices=False)
-        u_, s_, vt_ = _truncate_svd(u_, s_, vt_, r)
-        self._u = u_
-        ut_ = u_.conj().T
-        v_ = vt_.conj().T
-        s_inv = np.diag(np.reciprocal(s_))
+        self._u, self._s, vt_ = np.linalg.svd(X, full_matrices=False)
+        self._u, self._s, vt_ = _truncate_svd(self._u, self._s, vt_, r)
+        self._u = self._u
+        ut_ = self._u.conj().T
+        self._v = vt_.conj().T
+        s_inv = np.diag(np.reciprocal(self._s))
         # Compute the low-rank approximation of Koopman matrix
-        self.A_bar = ut_ @ Y @ v_ @ s_inv
+        self.A_bar = ut_[:, : self.m] @ Y @ self._v @ s_inv
+        # In case of DMDwC we are only interested in part corresponding to states
+        self.A_bar = self.A_bar[: self.m, : self.m]
 
         # Perform eigenvalue decomposition on A
-        self.Lambda, W = np.linalg.eig(self.A_bar)
+        self.Lambda, W = self.eig
 
         # Compute the coefficient matrix
-        # TODO: Find out whether to use X or Y (X usage ~ u @ W obviously)
-        # self.Phi = Y @ v.conj().T @ s_inv @ W
+        # self.Phi = Y @ self._v[:, : self.m] @ s_inv[: self.m, : self.m] @ W
         # self.Phi = u_ @ W
-        self.Phi = u_ @ s_inv @ W
-        # self.A = self.Phi @ np.diag(self.Lambda) @ np.linalg.pinv(self.Phi)
-        self.A = Y @ v_ @ s_inv @ ut_
+        self.Phi = self._u[: self.m, : self.m] @ s_inv[: self.m, : self.m] @ W
+        self.A = Y @ self._v @ s_inv @ ut_
 
     def fit(self, X: np.ndarray, Y: Union[np.ndarray, None] = None):
         """
@@ -180,23 +235,6 @@ class DMDc(DMD):
         self.known_B = B is not None
         self.l: int
 
-    def _fit(self, X: np.ndarray, Y: np.ndarray):
-        # Perform singular value decomposition on Xß
-        r = self.r if self.r > 0 else self.p + self.q
-        # u_, s_, v = np.linalg.svd(X, full_matrices=False)
-        # # Truncate the singular value matrices
-        u_, s_, vt_ = np.linalg.svd(X, full_matrices=False)
-        import matplotlib.pyplot as plt
-
-        plt.plot(s_)
-        u_, s_, vt_ = _truncate_svd(u_, s_, vt_, r)
-        self._u = u_
-        ut_ = u_.conj().T
-        v_ = vt_.conj().T
-        s_inv = np.diag(np.reciprocal(s_))
-
-        self.A = Y @ v_ @ s_inv @ ut_
-
     def fit(
         self,
         X: np.ndarray,
@@ -234,6 +272,7 @@ class DMDc(DMD):
         self.m, self.n = Y.shape
         self.p = self.p if self.p > 0 else self.m
         self.q = self.q if self.q > 0 else self.l
+        self.r = self.p + self.q
 
         self._fit(X, self._Y)
         if not self.known_B:
@@ -269,7 +308,7 @@ class DMDc(DMD):
                 f"u: {U.shape[0]}, forecast: {forecast}"
             )
 
-        mat = np.zeros((forecast + 1, self.m - self.l))
+        mat = np.zeros((forecast + 1, self.m))
         mat[0, :] = x
         for s in range(1, forecast + 1):
             action = (self.B @ U[s - 1, :]).real
