@@ -1,7 +1,7 @@
 # koopman_dmd_vs_derek
 
 ## Paper TODOS
-* MKV part of authorship? 
+
 * see multiple "%%MKL" in tex source
 * change the paper title, avoid abbreviations which nobody understands
 * include "young researcher grant"
