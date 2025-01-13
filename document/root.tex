@@ -62,7 +62,7 @@
 \end{abstract}
 
 \begin{IEEEkeywords}
-    DNN, Koopman analysis, LSTM, nonlinear systems, input delays
+    Koopman operator, nonlinear systems, identification, input delays
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -83,12 +83,13 @@ An essential aspect of modeling dynamical systems is accounting for time delays,
 
 This paper presents a dictionary-free method for learning linear representations of nonlinear systems with input delays using deep neural networks. By leveraging the strengths of deep learning in generating and updating nonlinear transformations, our approach aims to overcome the limitations of traditional Koopman operator methods and provide a robust framework for modeling and controlling nonlinear systems with time delays. The following sections are structured to guide the reader through the theoretical foundations, methodological advancements, and practical insights of our approach, addressing key challenges and presenting proposed solutions in this domain.
 
-In Section~\ref{sec:methodology}, we detail the methodological framework of our approach. Subsection~\ref{subsec:methodology:lstm_koopman} introduces the implementation of the LSTM-enhanced Deep Koopman model, emphasizing its ability to capture nonlinear dynamics through latent space representations. Subsection~\ref{subsec:methodology:explicit_loss} then describes the explicit loss function design, focusing on how it ensures accurate prediction and stability in the learning process.
+In Section~\ref{sec:methodology}, we detail the methodological framework of our approach. Subsection~\ref{subsec:methodology:lstm_koopman} introduces the implementation of the LSTM-enhanced Deep Koopman model, emphasizing its ability to capture nonlinear dynamics through latent space representations, where LSTM refers to deep neural network architecture Long-Short Term Memory, which is a type of recurrent neural network. Subsection~\ref{subsec:methodology:explicit_loss} then describes the explicit loss function design, focusing on how it ensures accurate prediction and stability in the learning process.
 
 Section~\ref{sec:results} presents the results of our approach, providing quantitative and qualitative evaluations. Subsection~\ref{subsec:results:comparison_edmd} compares our method with the established extended Dynamic Mode Decomposition (eDMD), highlighting improvements in capturing time-delayed nonlinear dynamics and demonstrating the advantages of our approach in representing unknown dynamics.
 
 
-\section{Methodology}\label{sec:methodology}
+\section{LSTM-Enhanced Deep Koopman Approach}\label{sec:methodology}
+% alebo Data-Driven Koopman Operator Approximation
 
 The foundation of the proposed approach lies in approximating the Koopman operator, a linear operator that represents the dynamics of nonlinear systems in an embedded space. The Koopman matrix \(\mathcal{K}\) provides the solution for the optimization problem:
 
@@ -99,13 +100,13 @@ The foundation of the proposed approach lies in approximating the Koopman operat
 where \(\mathbf{X}\) and \(\mathbf{X}'\) represent the data matrices of state observations and their corresponding future states, respectively, and \( \|\cdot \| _F\) denotes the Frobenius norm. This formulation provides the basis for deriving a linear approximation of the underlying dynamics, even for systems with time delays.
 
 
-The proposed approach leveraging the power of a long short-term memory layer encoding the history of a system is a novel approach for data-based identification of approximation of the Koopman operator. It can accurately identify the linear model for processes with time delays. Its basis comes from the Deep Koopman Operator (DKO)~\cite{lusch2018deep} approach.
+The proposed approach leveraging the power of a long short-term memory (LSTM) layer encoding the history of a system is a novel approach for data-based identification of approximation of the Koopman operator. It can accurately identify the linear model for processes with time delays. Its basis comes from the Deep Koopman Operator (DKO)~\cite{lusch2018deep} approach.
 
 LSTM-enhanced Deep Koopman is built to approximate the Koopman operator for the systems with time delays. Thanks to the LSTM layer that processes the system's history denoted \(H\), we can effectively capture the time delays in the system. Time delays are encoded as the hidden states of the last LSTM layer denoted \(h_k\). Thanks to this encoding (hidden states of LSTM), we can obtain the relevant information about the system's past.
 
 For example, using the LSTM layer, we can obtain the chosen number (this is a hyperparameter) of hidden states. These hidden states are then used as input to the encoder part of our approach. This way, we can reduce the amount of input data to the model compared to the Deep Koopman model, which would take the whole history of the system as input. This would be very inefficient and computationally more expensive.
 
-Also, compared to the DMD, where we would use the history of measurements, we can have a smaller Koopman matrix \(\mathcal{K}\). Considering, for example, the last \(\ui{l}{his}\) measurements of the system states \(x \in \mathbb{R}^n\), the \(A_\mathcal{K}\) would have the size \(\ui{l}{his}n \times \ui{l}{his}n\) and the \(B_\mathcal{K}\) would have the size \(\ui{l}{his}n \times m\),  where \(m\) is the number of inputs to the system \(u \in \mathbb{R}^m\). This is often an unnecessary huge matrix and computationally expensive to compute and store if we are dealing with a long history and many states. On the other hand, the LSTM layer can capture the relevant information about the system's past and reduce the amount of input data in the model.
+Also, compared to the DMD, where we would use the history of measurements, we can have a smaller Koopman matrix \(\mathcal{K}\). Considering, for example, the last \(\ui{l}{his}\) measurements of the system states \(x \in \mathbb{R}^n\), the \(A_\mathcal{K}\) would have the size \(\ui{l}{his}n \times \ui{l}{his}n\) and the \(B_\mathcal{K}\) would have the size \(\ui{l}{his}n \times m\),  where \(m\) is the number of inputs to the system \(u \in \mathbb{R}^m\). This is often a matrix that is more expensive to compute and store if we are dealing with a long history and many states compared to the LSTM-enhanced deep Koopman approach. On the other hand, the LSTM layer can capture the relevant information about the system's past and reduce the amount of input data in the model.
 
 \subsection{Implementation of LSTM-enhanced Deep Koopman}\label{subsec:methodology:lstm_koopman}
 %%MKL: toto vyzera skor ako promo na NeuroMANCER, nez ako popis implementacie. Tu treba zvyraznit, ktore funkcionality z neho vyuzivame.  @PV
@@ -171,7 +172,7 @@ The final loss function is a weighted sum of all the loss functions:
 where \(\ui{w}{rec}\), \(\ui{w}{step}\), \(\ui{w}{pred}\), and \(\ui{w}{lpred}\) are the weights for the reconstruction loss, one-step output prediction loss, output trajectory prediction loss, and latent trajectory prediction loss, respectively. They are set by the user and are used to balance the importance of the loss functions in the training process.
 
 %%MKL: tu mi chyba nejaky zaver, preco sa bavime of tychto loss-och? Akym sposobom to vplyva na vysledky? nejaky section-ending, ktory "namotivuje" naco som to cele cital, smerom do druhej kapitioly.  @PV
-\section{Results}\label{sec:results}
+\section{Case Study}\label{sec:results}
 
 \subsection{Comparison with eDMD}\label{subsec:results:comparison_edmd}
 
@@ -206,19 +207,34 @@ The performance of the models was evaluated using the mean absolute error (MAE) 
 %%MKL 2. Tie cisla treba naskalovat na %, t.j. z niektorej metriky treba spravit 100% resp. 1, a ostatne podla toho prepocitat. Chyba mi zaver z tejto tabulky. Co sme dosiahli?  @PV
 
 \begin{table}[htbp]\label{tab:results:two_tanks_results}
-    \caption{Performance comparison of LSTM-enhanced Deep Koopman and eDMD on the two tank system with input delays}
+    \caption{Performance comparison of LSTM-enhanced Deep Koopman and eDMD on the two tank system with input delays with best performance normed to \(100\% \)}
     \begin{center}
         \begin{tabular}{c S[table-format=1.4] S[table-format=3.2]}
             \toprule
-            \textbf{Model}             & \textbf{MAE} & \textbf{SAD} \\
+            \textbf{Model}             & \textbf{MAE} \([\%]\) & \textbf{SAD}\([\%]\) \\
             \midrule
-            LSTM-enhanced Deep Koopman & 0.1847       & 181.04       \\
-            eDMD (known dynamics)      & 0.6058       & 593.70       \\
-            eDMD (unknown dynamics)    & 0.1737       & 170.24       \\
+            eDMD (known dynamics)    & 100       & 100       \\
+            LSTM-enhanced Deep Koopman & 106       & 106       \\
+            eDMD (unknown dynamics)      & 349       & 349       \\
             \bottomrule
         \end{tabular}
     \end{center}
 \end{table}
+
+% \begin{table}[htbp]\label{tab:results:two_tanks_results}
+%     \caption{Performance comparison of LSTM-enhanced Deep Koopman and eDMD on the two tank system with input delays}
+%     \begin{center}
+%         \begin{tabular}{c S[table-format=1.4] S[table-format=3.2]}
+%             \toprule
+%             \textbf{Model}             & \textbf{MAE} & \textbf{SAD} \\
+%             \midrule
+%             LSTM-enhanced Deep Koopman & 0.1847       & 181.04       \\
+%             eDMD (known dynamics)      & 0.6058       & 593.70       \\
+%             eDMD (unknown dynamics)    & 0.1737       & 170.24       \\
+%             \bottomrule
+%         \end{tabular}
+%     \end{center}
+% \end{table}
 
 Lastly, we compare the eigenvalues of the Koopman operator for the two tank systems using LSTM-enhanced Deep Koopman and eDMD\@. Figure~\ref{fig:results:two_tanks_eigs} shows that LSTM-enhanced Deep Koopman provides more accurate and consistent eigenvalues with original eigenvalues compared to eDMD\@. This is an important contribution as the predictions could better align with reality and provide more accurate and consistent results.
 
