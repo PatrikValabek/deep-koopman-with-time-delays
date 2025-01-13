@@ -1,4 +1,5 @@
-matplotlib~=3.8.3
-numpy~=1.26.3
-pandas~=2.2.0
-scipy~=1.12.0
+ipykernel<7.0.0
+matplotlib<4.0.0
+numpy<3.0.0
+pandas<4.0.0
+scipy<2.0.0
