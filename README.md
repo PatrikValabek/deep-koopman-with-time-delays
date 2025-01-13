@@ -27,13 +27,7 @@ README.md
 ## Paper TODOS
 
 * see multiple "%%MKL" in tex source
-* ChatGPT feeling is strong, e.g. word "Leveraging"
-* @PV Abstract is too general, try to rewrite to be more specific to the theory and results from the paper. Basically, good abstract summarizes key points of the paper and provide some sort of "marketing" value
-* @PV we are missing a formal, mathematical definitions of the Koopman based model and its use in simulation >> I thing @MW resolved this
-* Table I: unusable, see comments in tex
-* @PV General comment: the paper is missing clear mathematical definitions of key vectors, matrices in equations.
-* @PV Na zaklade tohoto modelu sme dostali data, ktore vznikli simulaciou o dobu 100 samples
-
+'
 ## Future recommendations
 
 * general suggested labeling in LaTeX: `env_identificator:chapter_label:section_label:actual_label:sub_actual_label`
