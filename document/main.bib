@@ -1,3 +1,49 @@
+@article{drgovna2022dissipative,
+  author    = {Drgo{\v{n}}a, J{\'a}n and Tuor, Aaron and Vasisht, Soumya and Vrabie, Draguna},
+  journal   = {IEEE Open Journal of Control Systems},
+  pages     = {100--112},
+  publisher = {IEEE},
+  title     = {Dissipative deep neural dynamical systems},
+  volume    = {1},
+  year      = {2022},
+}
+
+@inproceedings{iacob2021deepcdc,
+  abstract  = {The present paper treats the identification of nonlinear dynamical systems using Koopman-based deep state-space encoders. Through this method, the usual drawback of needing to choose a dictionary of lifting functions a priori is circumvented. The encoder represents the lifting function to the space where the dynamics are linearly propagated using the Koopman operator. An input-affine formulation is considered for the lifted model structure and we address both full and partial state availability. The approach is implemented using the the deepSI toolbox in Python. To lower the computational need of the simulation error-based training, the data is split into subsections where multi-step prediction errors are calculated independently. This formulation allows for efficient batch optimization of the network parameters and, at the same time, excellent long term prediction capabilities of the obtained models. The performance of the approach is illustrated by nonlinear benchmark examples.},
+  author    = {Iacob, Lucian Cristian and Beintema, Gerben Izaak and Schoukens, Maarten and Tóth, Roland},
+  booktitle = {2021 60th IEEE Conference on Decision and Control (CDC)},
+  doi       = {10.1109/CDC45484.2021.9682946},
+  issn      = {2576-2370},
+  keywords  = {Training;Dictionaries;Computational modeling;Conferences;Neural networks;Predictive models;Benchmark testing},
+  month     = {Dec},
+  number    = {},
+  pages     = {2288-2293},
+  title     = {Deep Identification of Nonlinear Systems in Koopman Form},
+  volume    = {},
+  year      = {2021},
+}
+
+@article{korda2018linear,
+  author    = {Korda, Milan and Mezi{\'c}, Igor},
+  journal   = {Automatica},
+  pages     = {149--160},
+  publisher = {Elsevier},
+  title     = {Linear predictors for nonlinear dynamical systems: Koopman operator meets model predictive control},
+  volume    = {93},
+  year      = {2018},
+}
+
+@article{korda2020optimal,
+  author    = {Korda, Milan and Mezi{\'c}, Igor},
+  journal   = {IEEE Transactions on Automatic Control},
+  number    = {12},
+  pages     = {5114--5129},
+  publisher = {IEEE},
+  title     = {Optimal construction of Koopman eigenfunctions for prediction and control},
+  volume    = {65},
+  year      = {2020},
+}
+
 @article{Li201792,
   abstract = {A time-delay identification algorithm in closed-loop dynamic processes with disturbance based on maximum correlation analysis was proposed in this paper. To denoise the output data, the response of process disturbance was first estimated on routine data and then eliminated from the output. Next the incremental denoising process data were proposed to be used against the influence of system dynamic on the time-delay estimation. The correlations between the incremental input and different delayed output were computed and the delayed time corresponding to the maximum correlation was identified as the time-delay. The application in the Wood-Berry process and an industrial process showed the validity of the proposed algorithm.},
   author   = {Li-Juan Li and Ting-Ting Dong and Shu Zhang and Xiao-Xiao Zhang and Shi-Ping Yang},
@@ -9,7 +55,7 @@
   title    = {Time-delay identification in dynamic processes with disturbance via correlation analysis},
   url      = {https://www.sciencedirect.com/science/article/pii/S0967066117300655},
   volume   = {62},
-  year     = {2017}
+  year     = {2017},
 }
 
 @article{Lima2015254,
@@ -25,37 +71,7 @@
   title    = {Identification of Time-Delay Systems: a State-Space Realization Approach},
   url      = {https://www.sciencedirect.com/science/article/pii/S2405896315010575},
   volume   = {48},
-  year     = {2015}
-}
-
-@article{williams2015data,
-  title={A data--driven approximation of the koopman operator: Extending dynamic mode decomposition},
-  author={Williams, Matthew O and Kevrekidis, Ioannis G and Rowley, Clarence W},
-  journal={Journal of Nonlinear Science},
-  volume={25},
-  pages={1307--1346},
-  year={2015},
-  publisher={Springer}
-}
-
-@article{schmid2010dynamic,
-  title={Dynamic mode decomposition of numerical and experimental data},
-  author={Schmid, Peter J},
-  journal={Journal of fluid mechanics},
-  volume={656},
-  pages={5--28},
-  year={2010},
-  publisher={Cambridge University Press}
-}
-
-@article{korda2018linear,
-  author    = {Korda, Milan and Mezi{\'c}, Igor},
-  journal   = {Automatica},
-  pages     = {149--160},
-  publisher = {Elsevier},
-  title     = {Linear predictors for nonlinear dynamical systems: Koopman operator meets model predictive control},
-  volume    = {93},
-  year      = {2018}
+  year     = {2015},
 }
 
 @article{Lusch2018,
@@ -73,7 +89,33 @@
   title    = {Deep learning for universal linear embeddings of nonlinear dynamics},
   url      = {https://doi.org/10.1038/s41467-018-07210-0},
   volume   = {9},
-  year     = {2018}
+  year     = {2018},
+}
+
+@article{lusch2018deep,
+  author    = {Lusch, Bethany and Kutz, J Nathan and Brunton, Steven L},
+  journal   = {Nature communications},
+  number    = {1},
+  pages     = {4950},
+  publisher = {Nature Publishing Group UK London},
+  title     = {Deep learning for universal linear embeddings of nonlinear dynamics},
+  volume    = {9},
+  year      = {2018},
+}
+
+@inproceedings{Mauroy2016cdc,
+  abstract  = {We exploit the key idea that nonlinear system identification is equivalent to linear identification of the so-called Koopman operator. Instead of considering nonlinear system identification in the state space, we obtain a novel linear identification technique by recasting the problem in the infinite-dimensional space of observables. This technique can be described in two main steps. In the first step, similar to a component of the Extended Dynamic Mode Decomposition algorithm, the data are lifted to the infinite-dimensional space and used for linear identification of the Koopman operator. In the second step, the obtained Koopman operator is “projected back” to the finite-dimensional state space, and identified to the nonlinear vector field through a linear least squares problem. The proposed technique is efficient to recover (polynomial) vector fields of different classes of systems, including unstable, chaotic, and open systems. In addition, it is robust to noise, well-suited to model low sampling rate datasets, and able to infer network topology and dynamics.},
+  author    = {Mauroy, Alexandre and Goncalves, Jorge},
+  booktitle = {2016 IEEE 55th Conference on Decision and Control (CDC)},
+  doi       = {10.1109/CDC.2016.7799269},
+  issn      = {},
+  keywords  = {Noise measurement;Heuristic algorithms;Nonlinear dynamical systems;Trajectory;Generators;Open systems},
+  month     = {Dec},
+  number    = {},
+  pages     = {6500-6505},
+  title     = {Linear identification of nonlinear systems: A lifting technique based on the Koopman operator},
+  volume    = {},
+  year      = {2016},
 }
 
 @article{Mezic2004101,
@@ -87,7 +129,7 @@
   title    = {Comparison of systems with complex behavior},
   url      = {https://www.sciencedirect.com/science/article/pii/S0167278904002507},
   volume   = {197},
-  year     = {2004}
+  year     = {2004},
 }
 
 @article{Mezić2005,
@@ -103,56 +145,38 @@
   title    = {Spectral Properties of Dynamical Systems, Model Reduction and Decompositions},
   url      = {https://doi.org/10.1007/s11071-005-2824-x},
   volume   = {41},
-  year     = {2005}
+  year     = {2005},
 }
-
-@inproceedings{Yeung2019,
-  author       = {Yeung, Enoch and Kundu, Soumya and Hodas, Nathan},
-  booktitle    = {2019 American Control Conference (ACC)},
-  organization = {IEEE},
-  pages        = {4832--4839},
-  title        = {Learning deep neural network representations for Koopman operators of nonlinear dynamical systems},
-  year         = {2019}
-}
-
-@article{lusch2018deep,
-  author    = {Lusch, Bethany and Kutz, J Nathan and Brunton, Steven L},
-  journal   = {Nature communications},
-  number    = {1},
-  pages     = {4950},
-  publisher = {Nature Publishing Group UK London},
-  title     = {Deep learning for universal linear embeddings of nonlinear dynamics},
-  volume    = {9},
-  year      = {2018}
-}
-
 @misc{Neuromancer2023,
   author = {Drgona, Jan and Tuor, Aaron and Koch, James and Shapiro, Madelyn and Vrabie, Draguna},
   title  = {{NeuroMANCER: Neural Modules with Adaptive Nonlinear Constraints and Efficient Regularizations}},
   url    = {https://github.com/pnnl/neuromancer},
-  year   = {2023}
+  year   = {2023},
+}
+
+@article{schmid2010dynamic,
+  author    = {Schmid, Peter J},
+  journal   = {Journal of fluid mechanics},
+  pages     = {5--28},
+  publisher = {Cambridge University Press},
+  title     = {Dynamic mode decomposition of numerical and experimental data},
+  volume    = {656},
+  year      = {2010},
 }
 
 @article{shi2022deep,
-  author    = {Shi, Haojie and Meng, Max Q-H},
-  journal   = {IEEE Robotics and Automation Letters},
-  number    = {3},
-  pages     = {7700--7707},
-  publisher = {IEEE},
-  title     = {Deep koopman operator with control for nonlinear systems},
-  volume    = {7},
-  year      = {2022}
-}
-
-@article{korda2020optimal,
-  author    = {Korda, Milan and Mezi{\'c}, Igor},
-  journal   = {IEEE Transactions on Automatic Control},
-  number    = {12},
-  pages     = {5114--5129},
-  publisher = {IEEE},
-  title     = {Optimal construction of Koopman eigenfunctions for prediction and control},
-  volume    = {65},
-  year      = {2020}
+  abstract = {Recently Koopman operator has become a promising data-driven tool to facilitate real-time control for unknown nonlinear systems. It maps nonlinear systems into equivalent linear systems in embedding space, ready for real-time linear control methods. However, designing an appropriate Koopman embedding function remains a challenging task. Furthermore, most Koopman-based algorithms only consider nonlinear systems with linear control input, resulting in lousy prediction and control performance when the system is fully nonlinear with the control input. In this work, we propose an end-to-end deep learning framework to learn the Koopman embedding function and Koopman Operator together to alleviate such difficulties. We first parameterize the embedding function and Koopman Operator with the neural network and train them end-to-end with the K-steps loss function. Then, an auxiliary control network is augmented to encode the nonlinear state-dependent control term to model the nonlinearity in the control input. This encoded term is considered the new control variable instead to ensure linearity of the modeled system in the embedding system. We next deploy Linear Quadratic Regulator (LQR) on the linear embedding space to derive the optimal control policy and decode the actual control input from the control net. Experimental results demonstrate that our approach outperforms other existing methods, reducing the prediction error by order of magnitude and achieving superior control performance in several nonlinear dynamic systems like damping pendulum, CartPole, and the seven DOF robotic manipulator.},
+  author   = {Shi, Haojie and Meng, Max Q.-H.},
+  doi      = {10.1109/LRA.2022.3184036},
+  issn     = {2377-3766},
+  journal  = {IEEE Robotics and Automation Letters},
+  keywords = {Nonlinear dynamical systems;Aerospace electronics;Control systems;Deep learning;Real-time systems;Linearity;Optimal control;Deep learning methods;model learning for control;machine learning for robot control},
+  month    = {July},
+  number   = {3},
+  pages    = {7700-7707},
+  title    = {Deep Koopman Operator With Control for Nonlinear Systems},
+  volume   = {7},
+  year     = {2022},
 }
 
 @inproceedings{skomski2021constrained,
@@ -161,17 +185,40 @@
   organization = {IEEE},
   pages        = {3993--4000},
   title        = {Constrained block nonlinear neural dynamical models},
-  year         = {2021}
+  year         = {2021},
 }
 
-@article{drgovna2022dissipative,
-  author    = {Drgo{\v{n}}a, J{\'a}n and Tuor, Aaron and Vasisht, Soumya and Vrabie, Draguna},
-  journal   = {IEEE Open Journal of Control Systems},
-  pages     = {100--112},
-  publisher = {IEEE},
-  title     = {Dissipative deep neural dynamical systems},
-  volume    = {1},
-  year      = {2022}
+@article{williams2015data,
+  author    = {Williams, Matthew O and Kevrekidis, Ioannis G and Rowley, Clarence W},
+  journal   = {Journal of Nonlinear Science},
+  pages     = {1307--1346},
+  publisher = {Springer},
+  title     = {A data--driven approximation of the koopman operator: Extending dynamic mode decomposition},
+  volume    = {25},
+  year      = {2015},
+}
+
+@article{Wilson2023siamkoopman,
+  abstract = { Abstract. Koopman analysis provides a general theoretical underpinning for widely used dynamic mode decomposition algorithms which approximate the behavior of a nonlinear dynamical system using a linear operator. While such methods have proven to be remarkably useful in the analysis of time-series data, the resulting linear models must generally be of high order to accurately approximate fundamentally nonlinear behaviors. This issue poses an inherent risk of overfitting to training data, thereby limiting predictive capabilities. By contrast, this work explores strategies for nonlinear data-driven system identification using strategies inspired by Koopman analysis. General strategies that yield nonlinear models are presented for systems both with and without control. Subsequent projection of the resulting nonlinear equations onto a low-rank basis yields a low-order representation for the underlying dynamical system. In both computational and experimental examples considered in this work, linear estimators of the Koopman operator are generally only able to provide short-term predictions for the observable dynamics, while comparable nonlinear estimators for the system dynamics provide accurate predictions on substantially longer timescales and replicate infinite-time behaviors that linear predictors cannot. },
+  author   = {Wilson, Dan},
+  doi      = {10.1137/22M1512272},
+  eprint   = {https://doi.org/10.1137/22M1512272},
+  journal  = {SIAM Journal on Applied Dynamical Systems},
+  number   = {2},
+  pages    = {1445-1471},
+  title    = {Koopman Operator Inspired Nonlinear System Identification},
+  url      = {https://doi.org/10.1137/22M1512272},
+  volume   = {22},
+  year     = {2023},
+}
+
+@inproceedings{Yeung2019,
+  author       = {Yeung, Enoch and Kundu, Soumya and Hodas, Nathan},
+  booktitle    = {2019 American Control Conference (ACC)},
+  organization = {IEEE},
+  pages        = {4832--4839},
+  title        = {Learning deep neural network representations for Koopman operators of nonlinear dynamical systems},
+  year         = {2019},
 }
 
 @inproceedings{zhang2018stabilizing,
@@ -180,5 +227,5 @@
   organization = {PMLR},
   pages        = {5806--5814},
   title        = {Stabilizing gradients for deep neural networks via efficient svd parameterization},
-  year         = {2018}
+  year         = {2018},
 }
