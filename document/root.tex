@@ -94,10 +94,10 @@ Section~\ref{sec:results} presents the results of our approach, providing quanti
 The foundation of the proposed approach lies in approximating the Koopman operator, a linear operator that represents the dynamics of nonlinear systems in an embedded space. The Koopman matrix \(\mathcal{K}\) provides the solution for the optimization problem:
 
 \begin{equation}
-    \mathrm{argmin}_{\mathcal{K}} \|x_{k+1} - \mathcal{K}x_{k}\|_F,
+    \mathrm{argmin}_{\mathcal{K}} \sum_{k=0}^{n} \| x_{k+1} - \mathcal{K}x_{k} \|_F,
 \end{equation}
 
-where \(\mathbf{X}\) and \(\mathbf{X}'\) represent the data matrices of state observations and their corresponding future states, respectively, and \( \|\cdot \| _F\) denotes the Frobenius norm. This formulation provides the basis for deriving a linear approximation of the underlying dynamics, even for systems with time delays.
+where \( x_{k} \in \mathbb{R}^n\) represent the vector of state measurements and \( x_{k+1} \) corresponding future state, respectively, and \( \|\cdot \| _F\) denotes the Frobenius norm. This formulation provides the basis for deriving a linear approximation of the underlying dynamics, even for systems with time delays.
 
 
 The proposed approach leveraging the power of a long short-term memory (LSTM) layer encoding the history of a system is a novel approach for data-based identification of approximation of the Koopman operator. It can accurately identify the linear model for processes with time delays. Its basis comes from the Deep Koopman Operator (DKO)~\cite{lusch2018deep} approach.
@@ -213,9 +213,9 @@ The performance of the models was evaluated using the mean absolute error (MAE) 
             \toprule
             \textbf{Model}             & \textbf{MAE} \([\%]\) & \textbf{SAD}\([\%]\) \\
             \midrule
-            eDMD (known dynamics)    & 100       & 100       \\
-            LSTM-enhanced Deep Koopman & 106       & 106       \\
-            eDMD (unknown dynamics)      & 349       & 349       \\
+            eDMD (known dynamics)      & 100                   & 100                  \\
+            LSTM-enhanced Deep Koopman & 106                   & 106                  \\
+            eDMD (unknown dynamics)    & 349                   & 349                  \\
             \bottomrule
         \end{tabular}
     \end{center}
