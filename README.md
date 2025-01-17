@@ -1,5 +1,12 @@
 # DeReK: Deep Recursive Koopman for Nonlinear System Identification
 
+## TODO
+* emailove adresy vsetkych autorov
+* dokoncit a zosuladit notaciu v rovnicu (1)
+* v texte sa spomina "Koopman matrix K", ale v rovniciach nikde samotne "K" nie je
+* "Dictionary" nie je formalne definovane. Ludia z control comunity, ktori budu posudzovat tento clanok nevedie co to je
+* nikde v texte nie je vysvetlene co je "eDMD w/o \sqrt{x}". co je toto za experiment/simulaciu? Chyba mi v clanku definicia simulacnych scenarov. Co keby chcel niekto zreprodukovat simulacny experiment? Ma vsetky podklady k tomu?
+
 ## Overview
 
 This repository contains the LaTeX source files for the publication titled **"Deep Dictionary-Free Method for Identifying Linear Model of Nonlinear System with Input Delay"**. The paper discusses the application of the Koopman theory and LSTM in system identification, providing mathematical definitions, methodologies, and case studies.

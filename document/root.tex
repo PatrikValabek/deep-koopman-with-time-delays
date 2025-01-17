@@ -94,7 +94,15 @@ Section~\ref{sec:results} presents the results of our approach, providing quanti
 \section{LSTM-Enhanced Deep Koopman Approach}\label{sec:methodology}
 % alebo Data-Driven Koopman Operator Approximation
 
-The foundation of the proposed approach lies in approximating the Koopman operator, a linear operator that represents the dynamics of nonlinear systems in an embedded space. The Koopman matrix \(\mathcal{K}\) provides the solution for the optimization problem:
+The foundation of the proposed approach lies in approximating the Koopman operator, a linear operator that represents the dynamics of nonlinear systems in an embedded space. 
+Formally, we aim to find matrices in state equation covering
+\begin{equation}
+    % \begin{align}
+        z_{k+1} = A_\mathcal{K}z_k + B_\mathcal{K}u_k.
+    % \end{align}
+\end{equation}
+
+The Koopman matrix \(\mathcal{K}\) provides the solution for the optimization problem:
 
 \begin{equation}
     \mathrm{argmin}_{\mathcal{K}} \sum_{k=0}^{n} \| x_{k+1} - \mathcal{K}x_{k} \|_F,
