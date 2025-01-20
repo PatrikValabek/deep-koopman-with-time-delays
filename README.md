@@ -1,11 +1,13 @@
 # DeReK: Deep Recursive Koopman for Nonlinear System Identification
 
-## TODO
-* emailove adresy vsetkych autorov
-* dokoncit a zosuladit notaciu v rovnicu (1)
-* v texte sa spomina "Koopman matrix K", ale v rovniciach nikde samotne "K" nie je
-* "Dictionary" nie je formalne definovane. Ludia z control comunity, ktori budu posudzovat tento clanok nevedie co to je
-* nikde v texte nie je vysvetlene co je "eDMD w/o \sqrt{x}". co je toto za experiment/simulaciu? Chyba mi v clanku definicia simulacnych scenarov. Co keby chcel niekto zreprodukovat simulacny experiment? Ma vsetky podklady k tomu?
+## Paper TODOS
+
+* Chyba mi v clanku definicia simulacnych scenarov. Co keby chcel niekto zreprodukovat simulacny experiment? Ma vsetky podklady k tomu?
+
+## Code TODOS
+
+* @PV add deps to requirements.txt (your fork of neuromancer, etc.)
+* @PV ensure runability of the code
 
 ## Overview
 
@@ -25,21 +27,6 @@ document/
 └── root.tex
 README.md
 ```
-
-## Code TODOS
-
-* @PV add deps to requirements.txt (your fork of neuromancer, etc.)
-* @PV ensure runability of the code
-
-## Paper TODOS
-
-* see multiple "%%MKL" in tex source
-'
-## Future recommendations
-
-* general suggested labeling in LaTeX: `env_identificator:chapter_label:section_label:actual_label:sub_actual_label`
-  * in conference papers: `env_identificator:section_label:actual_label`
-  * in subequations/align: `eq:section_label:actual_label` in main environment and then `eq:section_label:actual_label:label_of_individual_eq`
 
 ## Acknowledgments
 
