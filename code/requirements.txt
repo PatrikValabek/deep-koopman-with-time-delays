@@ -3,4 +3,4 @@ matplotlib<4.0.0
 numpy<3.0.0
 pandas<4.0.0
 scipy<2.0.0
-git+https://github.com/PatrikValabek/neuromancer_lstm.git@main
+git+https://github.com/PatrikValabek/neuromancer_lstm.git

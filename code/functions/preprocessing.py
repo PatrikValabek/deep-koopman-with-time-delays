@@ -114,7 +114,7 @@ def time_shift(
     >>> time_shift(X, 3)
     array([[1., 2., 3.],
            [2., 3., 4.],
-           [3., 4., 5.],])
+           [3., 4., 5.]])
     """
     if shift == 0:
         return X
@@ -136,7 +136,7 @@ def time_shift(
         hX[:, i : i + n] = X if len(X.shape) > 1 else X.reshape(-1, 1)
         X = np.roll(X, -step, axis=0)
     if cut_rollover:
-        hX = hX[:-shift]
+        hX = hX[: -shift + 1]
     if feature_names_in_ is not None:
         return pd.DataFrame(
             hX,
