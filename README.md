@@ -1,14 +1,5 @@
 # DeReK: Deep Recursive Koopman for Nonlinear System Identification
 
-## Paper TODOS
-
-* Chyba mi v clanku definicia simulacnych scenarov. Co keby chcel niekto zreprodukovat simulacny experiment? Ma vsetky podklady k tomu?
-
-## Code TODOS
-
-* @PV add deps to requirements.txt (your fork of neuromancer, etc.)
-* @PV ensure runability of the code
-
 ## Overview
 
 This repository contains the LaTeX source files for the publication titled **"Deep Dictionary-Free Method for Identifying Linear Model of Nonlinear System with Input Delay"**. The paper discusses the application of the Koopman theory and LSTM in system identification, providing mathematical definitions, methodologies, and case studies.
