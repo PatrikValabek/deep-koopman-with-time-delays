@@ -91,18 +91,17 @@ Section~\ref{sec:results} presents the results of our approach, providing quanti
 
 
 \section{LSTM-Enhanced Deep Koopman Approach}\label{sec:methodology}
-% alebo Data-Driven Koopman Operator Approximation
 
-The foundation of the proposed approach lies in approximating the Koopman operator, a linear operator that represents the dynamics of nonlinear systems in an embedded space.
+The foundation of the proposed approach lies in approximating the Koopman operator \( \mathcal{K} \), a linear operator that represents the dynamics of nonlinear systems in an embedded space.
 Formally, we aim to find matrices in state equation covering
 \begin{equation}
     z_{k+1} = A_\mathcal{K}z_k + B_\mathcal{K}u_k.
 \end{equation}
 
-where the Koopman matrices \(A_\mathcal{K} \) and \( B_\mathcal{K} \) are the solution for the optimization problem:
+where \( \mathcal{K} = \begin{bmatrix} A_\mathcal{K} & B_\mathcal{K} \end{bmatrix} \) is the solution for the optimization problem:
 
 \begin{equation}
-    \mathrm{argmin}_{\mathcal{K}} \sum_{k=0}^{n} \| z_{k+1} - A_\mathcal{K}z_{k} - B_\mathcal{K}u_k \|_F,
+    \mathrm{argmin}_{\mathcal{K}} \sum_{k=0}^{n} \| z_{k+1} - \mathcal{K} \begin{bmatrix} z_{k} \\ u_k \end{bmatrix} \|_F,
 \end{equation}
 
 where \( z_{k} \in \mathbb{R}^n\) represent the vector of lifted states and \( z_{k+1} \) corresponding states in next step, respectively, and \( \|\cdot \| _F\) denotes the Frobenius norm. This formulation provides the basis for deriving a linear approximation of the underlying dynamics, even for systems with time delays.
