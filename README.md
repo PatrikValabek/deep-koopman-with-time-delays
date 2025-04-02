@@ -42,7 +42,7 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
 
 ### 🔍 Technical & Conceptual Comments
 
-- **PV1**: Clarify the definition and position of `x_k` in Section 2.A.  
+- **PV1**: ✅ Clarify the definition and position of `x_k` in Section 2.A.  
   - 🔲 Fix Fig. 1 showing `x_{k-1}` as last input.  
   - 🔲 Formally define the sequence `H`.  
   _Difficulty: Medium_

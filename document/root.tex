@@ -126,7 +126,15 @@ The NeuroMANCER library does not provide the use of LSTM layers, so we implement
 %Also, they provided implementation for learning stable Koopman operator based on Generic Stable Layers~\cite{skomski2021constrained, drgovna2022dissipative, zhang2018stabilizing} for constrained learning of NN\@. Also, implementing the control input in the model needed to be changed. Both models were implemented with the control input not encoded to be further compatible with Koopman MPC~\cite{korda2018linear}.
 
 
-The schematic of LSTM-enhanced Deep Koopman architecture can be seen in Fig.~\ref{fig:introduction:LSTM-enhanced_deep_koopman_scheme}. The model is built on the autoencoder architecture of the DKO\@. The history of state and input data is first encoded using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the last state as input to the autoencoder part. The autoencoder part remains the same as for the DKO\@.
+The schematic of LSTM-enhanced Deep Koopman architecture can be seen in Fig.~\ref{fig:introduction:LSTM-enhanced_deep_koopman_scheme}. The model is built on the autoencoder architecture of the DKO\@. Before the prediction we compute the history \(H\) of our system:
+\begin{equation}
+    H = \begin{bmatrix}
+    x_{k - \eta_H} & \cdots & x_{k-1} \\
+    u_{k - \eta_H} & \cdots & u_{k-1}
+    \end{bmatrix},
+\end{equation}
+where \(\eta_H\) is the number of time steps in the history of the system.     
+The \(H\), consisting of state and input data, is first encoded using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the current state as input to the autoencoder part. The autoencoder part remains the same as for the DKO\@.
 
 \subsection{Explicit Loss Function}\label{subsec:methodology:explicit_loss}
 In the training of the LSTM-enhanced Deep Koopman model, we are also using the same loss function as in the training of the DKO model.
@@ -134,9 +142,9 @@ This section is important for the reproducibility of the results.
 The loss function combines the reconstruction loss, one-step output prediction loss, output trajectory prediction loss, and latent trajectory prediction loss. These loss functions are described in the~\cite{lusch2018deep}. This function is one of the most important parts of the training process. Compared to DMD, where the loss function is only the mean squared error between the predicted and true future states for a one-step prediction, the Deep Koopman methods also use a multi-step prediction in a loss function. In identifying a system, by using the multi-step prediction, we can better capture the system's dynamics with input delays as opposed to only one-step prediction loss.
 
 \paragraph*{Reconstruction loss}
-is the mean squared error between the state \(x_k\) and the encoded (lifted) and decoded (unlifted) state \(g^{-1}(g(x_k))\):
+is the mean squared error between the state \(x_k\) and the encoded (lifted) and decoded (unlifted) state \(g^{-1}(g(x_k,h_k))\):
 \begin{equation}
-    \mathcal{L}_{\text{rec}} = \left \|x_k - g^{-1}(g(x_k))\right \|^2.
+    \mathcal{L}_{\text{rec}} = \left \|x_k - g^{-1}(g(x_k,h_k))\right \|^2.
 \end{equation}
 This loss is the basic loss function for the autoencoder part of the model. It ensures that we can correctly encode and decode the state of the system.
 
@@ -146,7 +154,7 @@ is the mean squared error between the predicted state \(\hat{x}_{k+1}\) and the 
 \begin{subequations}
     \begin{align}
         \mathcal{L}_{\text{step}} & = \left \|\hat{x}_{k+1} - x_{k+1}\right \|^2,     \\
-        \hat{x}_{k+1}             & = g^{-1}(A_\mathcal{K}g(x_k) + B_\mathcal{K}u_k),
+        \hat{x}_{k+1}             & = g^{-1}(A_\mathcal{K}g(x_k,h_k) + B_\mathcal{K}u_k),
     \end{align}
 \end{subequations}
 where \(u_k\) is the input flow rate at time \(k\), the \(A_\mathcal{K}\) and \(B_\mathcal{K}\) are the identified Koopman matrices.
@@ -156,20 +164,21 @@ is the mean squared error between the predicted trajectory \(\hat{x}_{k+1:k+\ui{
 \begin{subequations}
     \begin{align}
         \mathcal{L}_{\text{pred}} & = \sum_{i=1}^{\ui{N}{L}}\left \|\hat{x}_{k+i} - x_{k+i}\right \|^2,            \\
-        \hat{x}_{k+i}             & = g^{-1}\left(A_\mathcal{K}g(\hat{x}_{k+i-1}) + B_\mathcal{K}u_{k+i-1}\right), \\
-        \hat{x}_{k}               & = x_{k},
+        \hat{x}_{k+i}             & = g^{-1}\left(\hat{z}_{k+i}\right), \\
+        \hat{z}_{k+i}             & = A_{\mathcal{K}}\hat{z}_{k+i-1}+B_{\mathcal{K}}u_{k+i-1},          \\
+        \hat{z}_{k}               & = g(x_{k},h_k),
     \end{align}
 \end{subequations}
-where \(\ui{N}{L}\) is the prediction horizon in loss function specified by a user. In this case, the predicted trajectory \(\hat{x}_{k:k+\ui{N}{L}}\) is predicted based on the \(x_k\) and the input trajectory \(u_{k:k+\ui{N}{L}-1}\). This loss function is used to capture the dynamics of the system and also input delays. By using the multi-step prediction loss, we can better capture the dynamics of the system as opposed to only one-step prediction loss.
+where \(\ui{N}{L}\) is the prediction horizon in loss function specified by a user. In this case, the predicted trajectory \(\hat{x}_{k:k+\ui{N}{L}}\) is predicted based on the \(x_k,~h_k\) and the input trajectory \(u_{k:k+\ui{N}{L}-1}\). This loss function is used to capture the dynamics of the system and also input delays. By using the multi-step prediction loss, we can better capture the dynamics of the system as opposed to only one-step prediction loss.
 
 \paragraph*{Latent trajectory prediction loss}
 is the mean squared error between the lifted predicted trajectory \(\hat{z}_{k+1:k+\ui{N}{L}}\) and the lifted true trajectory \(z_{k+1:k+\ui{N}{L}}\):
 \begin{subequations}
     \begin{align}
         \mathcal{L}_{\text{lpred}} & = \sum_{k=1}^{\ui{N}{L}}\left \|\hat{z}_{k+i} - z_{k+i}\right \|^2, \\
-        z_{k+i}                    & = g(x_{k+i}),                                                       \\
+        z_{k+i}                    & = g(x_{k+i},h_{k+i}),                                                       \\
         \hat{z}_{k+i}              & = A_{\mathcal{K}}\hat{z}_{k+i-1}+B_{\mathcal{K}}u_{k+i-1},          \\
-        \hat{z}_{k}                & = g(x_{k}),
+        \hat{z}_{k}                & = g(x_{k},h_k),
     \end{align}
 \end{subequations}
 where this loss function works with the same principle as the output trajectory prediction loss~\ref{par:methodology:output_loss}, but in the space of lifted states.
