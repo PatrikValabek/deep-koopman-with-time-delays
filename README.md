@@ -47,7 +47,7 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
   - 🔲 Formally define the sequence `H`.  
   _Difficulty: Medium_
 
-- **PV2**: Include `h_k` in function `g` throughout Section 2.B.  
+- **PV2**: ✅ Include `h_k` in function `g` throughout Section 2.B.  
   - 🔲 Revise equations (3)–(6) to reflect:  
     `x_k - g^{-1}(g(x_k,h_k))` and  
     `h_k = f(x_k, ..., x_{k-nH}, u_k, ..., u_{k-nH})`  
@@ -57,13 +57,13 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
   - 🔲 Explain if it shows eigenvalues of linearized system.  
   - 🔲 Clarify cross colors in lower subplots.
 
-- **PV4**: Add brief explanation on solving optimization problem (7).  
+- **PV4**: ✅ Add brief explanation on solving optimization problem (7).  
   - 🔲 Include weight values used.
 
-- **PV5**: Define and justify the value of the sequence length `H`.  
+- **PV5**: ✅ Define and justify the value of the sequence length `H`.  
   - 🔲 Was `H = 20` used to match system time delay?
 
-- **PV6**: Explain testing initialization.  
+- **PV6**: ✅ Explain testing initialization.  
   - 🔲 Was ground truth sequence used for the first LSTM prediction?
 
 - **MW7**: Improve comparison methodology.  
@@ -73,7 +73,7 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
 - **MW8**: Evaluation metrics clarification.  
   - 🔲 Show **SAD** in Table 1 (not just **MAE**). or delete sad from text :D
 
-- **PV9**: Fix cross-references.  
+- **PV9**: ✅ Fix cross-references.  
   - 🔲 Correct output trajectory loss reference (end of page 3). 
 
 ## ✅ 2nd Review
@@ -93,17 +93,14 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
 - **MW5**: In Equation (2), verify upper sum limit `n`.  
   - 🔲 Is it related to `z_k` dimension or number of snapshots (`m`)?
 
-- **PV6**: Fix grammar:  
+- **PV6**:?ask MK? Fix grammar:  
   - 🔲 “These loss functions are described in the [11].” → missing article or rephrase.
 
-- **PV7**: Replace Matlab-like trajectory notation.  
-  - 🔲 Suggest: `x(k+i|k)` for all `i = 1...N_l`
-
-- **PV8**: Clarify Lifting Network explanation.  
+- **PV8**: ✅Clarify Lifting Network explanation.  
   - 🔲 Sentence: “two layers, 60 neurons, resulting in 40 states” — split and explain transformation.
 
 - **MW9**: Fix table reference:  
-  - 🔲 “Table III-A” incorrect.  
+  - ✅ “Table III-A” incorrect.  
   - 🔲 Shorten the table caption.  
   - 🔲 Add **SAD** metric (if missing).
 
