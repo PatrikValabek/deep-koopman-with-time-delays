@@ -1,0 +1,64 @@
+--------------------------------------------------
+Review #1
+Comments for authors:
+The paper presents a deep leraning-based method for identifying nonlinear systems with input delay. The proposed model builds on the deep koopman operator (DKO) network, incorporating an additional LSTM layer to capture time delays from historical sequences. The authors evaluate the performance of their method by comparing it to the extended dynamic mode decomposition (eDMD) method, both when the true dyanamics are included in the dictionary and when they are not.
+
+Overall, the presented method is a valuable contribution to the identification of systems with input delay. However, the following points should be addressed before considering the work for publications:
+
+1 - The authors mentioned at the end of section 2.A that &quot;The hidden states of the last LSTM layer are then concatenated with the last state as input to the encoder part&quot;. Based on this sentence, I assume that x_k is the last input element of H. However, Fig.1 shows that the last element is x_{k-1}, which appears to be a mistake. I also recomment formally defining the sequence H in the text.
+2 - The occurence of h_k as an argument to the function g is missing throughout section 2.B. This is very important to address because it shows how the learnable parameters of the LSTM layer are being trained. For example, the reconstruction error in equation (3) should read: x_k - g^{-1}(g(x_k,h_k)) and h_k = f(x_{k}, ..., x_{k-nH}, u_k, ..., u_{k-nH}), where f represents the LSTM layer. The authors should revise equations (3) to (6) to align with the proposed architecture.
+3 - Figure 3 is not clear and requires further explanation. Does the first image show the eingenvalue(s) of the linearized system ? Additionally,  the meaning of the different cross colors in the lower subplots should be clarified.
+4 - The authors should briefly mention how they solved the formulated multi-objective optimization problem (7) and specify the weight values used.
+5 - The length of the sequence H is a crucial hyperparameter of the presented method, as it directly affects the model’s ability to capture time delays. What value was used during training ? was it also set to 20 corresponding to the true time delay of the system ? Performing a sensitivity study on this hyperparameter would significantly enhance the quality of the work.
+6 - The authors should clarify how the model was initialized during testing. Was a ground truth sequence provided for the first LSTM predition ?
+7 - While I agree that the training should be performed using noisy state measurements, the results in Figure 2 should be compared to the ground truth signal obtained from simulating Equation (8), rather than to a noisy version of it. Additionally, including a metric that evaluates performance relative to the ground truth, rather than solely in comparison to eDMD, would strengthen the analysis. I also suggest including a comparision with respect to the DKO network to highlight the importance of including the LSTM layer for systems with input dalay.
+8 - The authors mentioned MAE and SAD as evaluation metrics, but only MAE is shown in Table 1.
+9 - The output trajectory loss is not correctly cross-referenced at the end of page 3. Similarly, references to tables and figures later in the text need to be corrected.
+
+
+
+--------------------------------------------------
+Review #2
+Comments for authors:
+Summary:
+
+The paper introduces a novel method for the identification of a non-linear system with input delay. The authors use an LSTM neural network jointed with a deep Koopman model to identify arbitrary non-linear system dynamics in a lifted linear space utilizing Koopman operator theory. The LSTM is used to inform the lifted dynamics about past system dynamics, as the original systems considered here possess input delay. The employed additional deep Koopman architecture consists of autoencoder-based encoder-decoder networks to lift, predict, and project the state in their respective spaces. The advantages of this approach, especially being dictionary-free compared to eDMD approaches, are highlighted through the paper.
+A simulated case study on a two-tank system is performed by the authors. The authors compare their proposed method to two eDMD approaches, one with a matching dictionary containing the relevant sqrt-terms for the tank system dynamic and one with a non-matching dictionary mimicking unknown analytic system dynamics.
+The case study shows that the proposed method outperforms the eDMD with unknown dynamics in terms of the prediction error. Its performance is very close to the eDMD with a matching dictionary. A further benefit of the proposed method is the smaller dimensionality of the lifted space, as the LSTM already decodes the relevant historic information in its hidden states. Also, the authors investigate the eigenvalues of the Koopman models.
+
+General Comments:
+
+- Writing quality:
+
+The writing quality is good. There are some minor typos or wrong references, but nothing dramatic (see below). The figures are good to read, but some color-coding can be explained to improve it further. Fig. 1 can be reduced in size or extended with some visualization of the LSTM and encoder/decoder network topologies as a service to the reader.
+
+- Technical quality:
+
+The approach to use an LSTM network to include compressed historic information in the Koopman model is interesting. The simulative study gives a good impression of the capabilities of the method. Unfortunately, the numeric values of the SAD metric are missing in the paper. The assessment of the eigenvalues in Fig. 3 needs further explanation. Also, it is not clear where the “original” eigenvalues correspond to. Further, the color and size coding of the eigenvalues in the complex plane is not explained. 
+
+
+Grammatical comments / suggestions:
+
+1: Abstract: Introduce eDMD as you did for LSTM
+
+2: “To address this, Extended DMD (eDMD) [6] incorporates {a} dictionary, …“
+
+3: Further visualize the topology of the LSTM and decoder/encoder networks, so the reader can understand the information that is extracted from the LSTM and included in the lifting NN.
+
+4: “we aim to find matrices in state equation covering … “ unclear wording
+
+5: In Equation (2) the upper limit of the sum is n being linked to the dimension of z_k. Is this true? I expected it to be some m corresponding to the number of snapshots.
+
+6: “These loss functions are described in the [11].” Missing words
+
+7: Some Matlab-like notation is used to describe trajectories. Maybe switch to a more established notation like x(k+i|k) \forall i =1 \dots N_l
+
+8: “The lifting network consists of two layers, each with 60 neurons, at the end, resulting in 40 lifted states.” Clarify by splitting sentence and maybe explain how you end up with 40 states.
+
+9: “The results are presented in Table III-A.“ Faulty reference. Also the table caption is way too long. SAD Metric missing.
+
+10: “Figure III-A shows that LSTM enhanced Deep Koopman provides…“ Faulty reference
+
+11: Show the original values without the noise as well in Fig. 2. Maybe also add a detail view on time steps where the input flow rate changes in order to show the time delay of the system.
+
+12: Explain the different color and size coding of the eigenvalues in Figure 3.
