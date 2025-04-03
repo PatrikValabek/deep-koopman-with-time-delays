@@ -70,3 +70,17 @@ class TwoTank(ODE):
         dhdt = [dhdt1, dhdt2]
 
         return dhdt
+
+    def compute_A(self, x):
+        h1 = self.B.core.clip(x[0], 0, 10)
+        h2 = self.B.core.clip(x[1], 0, 10)
+        # Compute the Jacobian matrix A
+        A11 = -self.k11 / (2 * self.F1 * np.sqrt(h1))
+        A12 = 0
+        A21 = self.k11 / (2 * self.F2 * np.sqrt(h1))
+        A22 = -self.k22 / (2 * self.F2 * np.sqrt(h2))
+
+        # Construct the matrix A
+        A = np.array([[A11, A12], [A21, A22]])
+
+        return A
