@@ -54,6 +54,7 @@ tests/*
 !*.gitattributes
 
 # LaTeX
+template/
 *.aux
 *.bbl
 *.blg
