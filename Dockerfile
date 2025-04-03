@@ -8,11 +8,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y git build-essential gfortran pkg-config libopenblas-dev && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
-COPY code/requirements.txt /app/code/requirements.txt
-COPY code/requirements-dev.txt /app/code/requirements-dev.txt
+COPY requirements.txt /app/requirements.txt
+COPY requirements-dev.txt /app/requirements-dev.txt
 
 # Install the dependencies
-RUN pip install --no-cache-dir -r code/requirements.txt  -r code/requirements-dev.txt
+RUN pip install --no-cache-dir -r requirements.txt  -r requirements-dev.txt
 RUN pip install notebook jupyterlab
 
 # Expose Jupyter's default port
