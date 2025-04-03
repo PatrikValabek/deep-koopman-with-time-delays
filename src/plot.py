@@ -25,8 +25,8 @@ line_cycler = cycler("color", colors) + cycler("linestyle", line_styles)
 plt.rcParams.update(
     {
         "text.usetex": True,
-        "font.family": "CMU Serif",
-        "font.serif": "CMU Serif",
+        "font.family": "Computer Modern",
+        "font.serif": "Computer Modern",
         "axes.prop_cycle": line_cycler,
         "axes.grid": True,
     }
@@ -83,6 +83,38 @@ def set_size(
     )
 
     return (fig_width_in * 1.2, fig_height_in * 1.2)
+
+
+def plot_results(U_t, *Ys, labels=None):
+    """
+    Plot the results of the eDMD model predictions and the input flow rate.
+
+    Parameters:
+    *Ys (tuple of ndarrays): True water level values and predicted water level values.
+    U_t (ndarray): Input flow rate values.
+    """
+    fig, axs = plt.subplots(
+        3, 1, figsize=set_size("ieee", subplots=(3, 1)), sharex=True
+    )
+    if not isinstance(axs, np.ndarray):
+        axs = np.array([axs])
+
+    for ys in Ys:
+        for i, (ax, y) in enumerate(zip(axs, ys.T), start=1):
+            ax.plot(y)
+            ax.set_ylabel(f"Water Level in Tank {i} " + "$\\mathrm{(m)}$")
+            ax.ticklabel_format(style="sci", axis="y", scilimits=(2, 1))
+
+    axs[2].plot(U_t)
+    axs[2].set_ylabel("Input Flow Rate $\\mathrm{(m^3~s^{-1})}$")
+    axs[2].set_xlabel("Time (-)")
+    axs[2].ticklabel_format(style="sci", axis="y", scilimits=(2, 1))
+
+    axs[0].legend(labels)
+
+    fig.tight_layout()
+
+    return fig
 
 
 def plot_eigs(
