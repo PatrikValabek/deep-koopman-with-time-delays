@@ -6,7 +6,8 @@ WORKDIR /app
 
 # Install git, build-essential, gfortran, and pkg-config
 RUN apt-get update && apt-get install -y git build-essential gfortran pkg-config libopenblas-dev && rm -rf /var/lib/apt/lists/*
-
+# Install LaTeX
+RUN apt-get update && apt-get install -y --no-install-recommends texlive-latex-base texlive-fonts-recommended texlive-fonts-extra cm-super dvipng && rm -rf /var/lib/apt/lists/*
 # Copy the requirements file into the container
 COPY requirements.txt /app/requirements.txt
 COPY requirements-dev.txt /app/requirements-dev.txt
