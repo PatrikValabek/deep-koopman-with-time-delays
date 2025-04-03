@@ -134,9 +134,10 @@ class Hankel(BaseEstimator, TransformerMixin):
         return self
 
     @overload
-    def transform(self, X: pd.DataFrame) -> pd.DataFrame: ...
-    @overload
     def transform(self, X: np.ndarray) -> np.ndarray: ...
+    @overload
+    def transform(self, X: pd.DataFrame) -> pd.DataFrame: ...
+
     def transform(self, X):
         """Transform X into a Hankel matrix.
 
@@ -324,12 +325,12 @@ def hankel(
 
 @overload
 def time_shift(
-    X: pd.DataFrame, shift: int, step: int = 1, cut_rollover: bool = True
-) -> pd.DataFrame: ...
-@overload
-def time_shift(
     X: np.ndarray, shift: int, step: int = 1, cut_rollover: bool = True
 ) -> np.ndarray: ...
+@overload
+def time_shift(
+    X: pd.DataFrame, shift: int, step: int = 1, cut_rollover: bool = True
+) -> pd.DataFrame: ...
 
 
 def time_shift(

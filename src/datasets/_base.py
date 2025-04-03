@@ -50,7 +50,7 @@ def add_noise(
     """
     rng = np.random.default_rng(seed)
     noise = rng.normal(0, noise_level, size=data["X"].shape)
-    noisy_data: TwoTankData = {k: v.copy() for k, v in data.items()}
+    noisy_data: TwoTankData = {k: v.copy() for k, v in data.items()}  # type: ignore
     noisy_data["X"] += noise
     noisy_data["X"][noisy_data["X"] < 0] = 0
     noisy_data["Y"] += noise
