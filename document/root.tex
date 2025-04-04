@@ -129,11 +129,11 @@ The NeuroMANCER library does not provide the use of LSTM layers, so we implement
 The schematic of LSTM-enhanced Deep Koopman architecture can be seen in Fig.~\ref{fig:introduction:LSTM-enhanced_deep_koopman_scheme}. The model is built on the autoencoder architecture of the DKO\@. Before the prediction we compute the history \(H\) of our system:
 \begin{equation}
     H = \begin{bmatrix}
-    x_{k - \eta_H} & \cdots & x_{k-1} \\
-    u_{k - \eta_H} & \cdots & u_{k-1}
+        x_{k - \eta_H} & \cdots & x_{k-1} \\
+        u_{k - \eta_H} & \cdots & u_{k-1}
     \end{bmatrix},
 \end{equation}
-where \(\eta_H\) is the number of time steps in the history of the system. We set this parameter to be higher value as our observed or estimated time delay.      
+where \(\eta_H\) is the number of time steps in the history of the system. We set this parameter to be higher value as our observed or estimated time delay.
 The \(H\), consisting of state and input data, is first encoded using the LSTM layer. The hidden states of the last LSTM layer are then concatenated with the current state as input to the autoencoder part. The autoencoder part remains the same as for the DKO\@.
 
 \subsection{Explicit Loss Function}\label{subsec:methodology:explicit_loss}
@@ -153,7 +153,7 @@ is the mean squared error between the predicted state \(\hat{x}_{k+1}\) and the 
 
 \begin{subequations}
     \begin{align}
-        \mathcal{L}_{\text{step}} & = \left \|\hat{x}_{k+1} - x_{k+1}\right \|^2,     \\
+        \mathcal{L}_{\text{step}} & = \left \|\hat{x}_{k+1} - x_{k+1}\right \|^2,         \\
         \hat{x}_{k+1}             & = g^{-1}(A_\mathcal{K}g(x_k,h_k) + B_\mathcal{K}u_k),
     \end{align}
 \end{subequations}
@@ -164,8 +164,8 @@ where \(u_k\) is the input flow rate at time \(k\), the \(A_\mathcal{K}\) and \(
 is the mean squared error between the predicted trajectory \(\hat{x}_{k+1:k+\ui{N}{L}}\) and the true trajectory \(x_{k+1:k+\ui{N}{L}}\):
 \begin{subequations}
     \begin{align}
-        \mathcal{L}_{\text{pred}} & = \sum_{i=1}^{\ui{N}{L}}\left \|\hat{x}_{k+i} - x_{k+i}\right \|^2,            \\
-        \hat{x}_{k+i}             & = g^{-1}\left(\hat{z}_{k+i}\right), \\
+        \mathcal{L}_{\text{pred}} & = \sum_{i=1}^{\ui{N}{L}}\left \|\hat{x}_{k+i} - x_{k+i}\right \|^2, \\
+        \hat{x}_{k+i}             & = g^{-1}\left(\hat{z}_{k+i}\right),                                 \\
         \hat{z}_{k+i}             & = A_{\mathcal{K}}\hat{z}_{k+i-1}+B_{\mathcal{K}}u_{k+i-1},          \\
         \hat{z}_{k}               & = g(x_{k},h_k),
     \end{align}
@@ -177,7 +177,7 @@ is the mean squared error between the lifted predicted trajectory \(\hat{z}_{k+1
 \begin{subequations}
     \begin{align}
         \mathcal{L}_{\text{lpred}} & = \sum_{k=1}^{\ui{N}{L}}\left \|\hat{z}_{k+i} - z_{k+i}\right \|^2, \\
-        z_{k+i}                    & = g(x_{k+i},h_{k+i}),                                                       \\
+        z_{k+i}                    & = g(x_{k+i},h_{k+i}),                                               \\
         \hat{z}_{k+i}              & = A_{\mathcal{K}}\hat{z}_{k+i-1}+B_{\mathcal{K}}u_{k+i-1},          \\
         \hat{z}_{k}                & = g(x_{k},h_k),
     \end{align}
@@ -201,7 +201,7 @@ This section presentes the comparison of the performance of LSTM-enhanced Deep K
     \begin{aligned}
         \diff{h_1(t)}{t} & = q(t-\tau) - \frac{k_1}{F_1}\sqrt{h_1(t)}                     \\
         \diff{h_2(t)}{t} & = \frac{k_1}{F_2}\sqrt{h_1(t)} - \frac{k_2}{F_2}\sqrt{h_2(t)},
-    \end{aligned}
+    \end{aligned}\label{eq:two_tanks_system}
 \end{equation}
 
 where \(h_1(t)\) and \(h_2(t)\) are the water levels in tanks 1 and 2, respectively, \(q(t)\) is the input flow rate, \(\tau \) is the input delay, and \(k_1\), \(k_2\) are the flow rate constants of the valves and \(F_1\), \(F_2\) are the cross-sectional areas of the tanks.
@@ -213,54 +213,39 @@ The data were split into training and testing sets with a ratio of 50:50. The tr
 For reference, we use eDMD with dictionary of polynomials up to degree 2, the correct governing nonlinear dynamics, which is square root of the water levels and the time-delayed embeddings of the input flow rate composed of the previous 20 samples. For comparison, eDMD without the square root of the water levels was also used, simulating a situation where the true nonlinear terms are not known. Therefore, they are not included in the dictionary, which is often the case in more complex systems. Lifted states were obtained by concatenating the dictionary terms and time-delayed embeddings, and the Koopman matrix was learned using eDMD\@.
 
 The LSTM-enhanced Deep Koopman model consists of an LSTM layer with one hidden layer with \(8\) units to extract information about the time delays in the system from the history of the system. The concatenated information is then transformed into lifted states using an encoder layer with a fully connected network. The lifting network consists of input layer with \(10\) neurons representing inputs \(x\text{ and } h\), two hidden layers, each with \(60\) neurons and lifted state layer consisting of \(40\) neurons representing lifted states \(z\).  After lifting the states, there is a prediction layer represented with the matrices \(A_\mathcal{K}\) \(\left(40 \times 40\right)\) and \(B_\mathcal{K}\) \(\left(40 \times 1\right)\). After the prediction layer, the lifted states are projected back to \(2\) states representing the water level in the tanks, using the decoder part of the autoencoder with two hidden layers, each containing \(60\) neurons.
-For the weights in \eqref{eq:loss_function} we set \(\ui{w}{rec} = 0\), \(\ui{w}{step} = 1\), \(\ui{w}{pred} = 10\), and \(\ui{w}{lpred} = 1\). The model was trained using PyTorch for \(1500\) epochs with a batch size of \(100\) using the Adam optimizer with a learning rate of \(0.001\). 
+For the weights in \eqref{eq:loss_function} we set \(\ui{w}{rec} = 0\), \(\ui{w}{step} = 1\), \(\ui{w}{pred} = 10\), and \(\ui{w}{lpred} = 1\). The model was trained using PyTorch for \(1500\) epochs with a batch size of \(100\) using the Adam optimizer with a learning rate of \(0.001\).
 
 Figure~\ref{fig:results:two_tanks_results} shows the predicted and actual water levels in tanks \(1\) and \(2\) for the two tank systems using LSTM-enhanced Deep Koopman and eDMD with and without the square root of the water levels. All three algorithms were initialized with access to same \(H\). The results demonstrate that LSTM-enhanced Deep Koopman outperforms eDMD, which does not include true nonlinear behavior in terms of prediction accuracy, capturing the system's dynamics more effectively over the testing set.\ eDMD without the square root of the water levels exhibits systematic overestimation of the influence of input flow rate step change, leading to a positive bias in the prediction of water levels. At the same time, LSTM-enhanced Deep Koopman provides more accurate and consistent predictions. The linear model generated by LSTM-enhanced Deep Koopman displays non-minimum phase behavior, which is actually a possible approach in the identification of systems with input delays. Meanwhile, eDMD with the square root of the water levels provides accurate prediction, as it includes the true nonlinear terms in the dictionary, thanks to prior knowledge of the system's dynamics.
 
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=\linewidth]{figures/dmdc_multipred-p0-q0-hm20-hl0.pdf}}
-    \caption{Predicted and actual water levels in tanks \(1\) and \(2\) for the two tank system.}
+    \caption{Predicted and actual water levels in tanks \(1\) and \(2\) for the two tank system. Blue line shows the simulation of~\eqref{eq:two_tanks_system}, while gray shows the noisy data, as used for training. The sequence shows a snippet of testing set which was unseen during system identification.}
     \label{fig:results:two_tanks_results}
 \end{figure}
 
-The performance of the models was evaluated using the mean absolute error (MAE) between the predicted and actual water levels in tanks 1 and 2. The results are presented in Table~\ref{tab:results:two_tanks_results}. LSTM-enhanced Deep Koopman achieved a significantly lower MAE compared to eDMD without square root, indicating its superior performance in modeling the system with input delays in cases where true nonlinear dynamics are not known. Meanwhile, LSTM-enhanced Deep Koopman provides comparable results to eDMD with square root, demonstrating its effectiveness in capturing the system's dynamics without prior knowledge of the true nonlinear terms, demonstrating the capabilities of the LSTM-enhanced Deep Koopman model in modeling nonlinear systems with input delays. The degradation in performance was, in this case, slightly above \( 6\% \) in MAE. It is important to note that the LSTM-enhanced Deep Koopman model is composed of a smaller number of lifted states compared to eDMD\@. This is thanks to the fact that the history of the system is encoded and does not need to be introduced whole to the model during lifted states generation. This results in an almost \(4\) times smaller Koopman matrix, which is computationally less expensive to compute and store.
+The performance of the models was evaluated using the mean absolute error (MAE) between the predicted and actual water levels in tanks 1 and 2. The results are presented in Table~\ref{tab:results:two_tanks_results}. LSTM-enhanced Deep Koopman achieved a significantly lower MAE compared to eDMD without square root, indicating its superior performance in modeling the system with input delays in cases where true nonlinear dynamics are not known. Meanwhile, LSTM-enhanced Deep Koopman provides comparable results to eDMD with square root, demonstrating its effectiveness in capturing the system's dynamics without prior knowledge of the true nonlinear terms, demonstrating the capabilities of the LSTM-enhanced Deep Koopman model in modeling nonlinear systems with input delays. The degradation in performance was, in this case, \( 70\% \) in MAE as compared to eDMD with square root, nevertheless it makes only 0.04 m higher error in absolute water levels. It is important to note that the LSTM-enhanced Deep Koopman model is composed of a smaller number of lifted states compared to eDMD\@. This is thanks to the fact that the history of the system is encoded and does not need to be introduced whole to the model during lifted states generation. This results in an almost \(4\) times smaller Koopman matrix, which is computationally less expensive to compute and store.
 
 \begin{table}[htbp]
     \caption{Performance comparison of used methods with the best performance normed to \(100\% \)}
     \label{tab:results:two_tanks_results}
     \begin{center}
-        \begin{tabular}{c S[table-format=3.2] }
+        \begin{tabular}{c S[table-format=0.2] S[table-format=3.2] }
             \toprule
-            \textbf{Model}             & \textbf{MAE}~\([\%]\) \\
+            \textbf{Model}             & \textbf{MAE}~\([m]\) & \textbf{MAE}~\([\%]\) \\
             \midrule
-            eDMD (known dynamics)      & 100                   \\
-            LSTM-enhanced Deep Koopman & 106                   \\
-            eDMD (unknown dynamics)    & 349                   \\
+            eDMD (known dynamics)      & 0.06                 & 100                   \\
+            LSTM-enhanced Deep Koopman & 0.10                 & 170                   \\
+            eDMD (unknown dynamics)    & 0.60                 & 1041                  \\
             \bottomrule
         \end{tabular}
     \end{center}
 \end{table}
 
-% \begin{table}[htbp]\label{tab:results:two_tanks_results}
-%     \caption{Performance comparison of LSTM-enhanced Deep Koopman and eDMD on the two tank system with input delays}
-%     \begin{center}
-%         \begin{tabular}{c S[table-format=1.4] S[table-format=3.2]}
-%             \toprule
-%             \textbf{Model}             & \textbf{MAE} & \textbf{SAD} \\
-%             \midrule
-%             LSTM-enhanced Deep Koopman & 0.1847       & 181.04       \\
-%             eDMD (known dynamics)      & 0.6058       & 593.70       \\
-%             eDMD (unknown dynamics)    & 0.1737       & 170.24       \\
-%             \bottomrule
-%         \end{tabular}
-%     \end{center}
-% \end{table}
-
 Lastly, we compare the eigenvalues of the Koopman operator for the two tank systems using LSTM-enhanced Deep Koopman and eDMD\@. Figure~\ref{fig:eigs} shows that LSTM-enhanced Deep Koopman provides more accurate and consistent eigenvalues with original eigenvalues compared to eDMD\@. This is an important contribution as the predictions could better align with reality and provide more accurate and consistent results.
 
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=\linewidth]{figures/eigenvalues_comparison.pdf}}
-    \caption{Comparison of eigenvalues of the Koopman operator for the two tank system}
+    \caption{Comparison of eigenvalues of the Koopman operator for the two tank system. Subplot ``Original'' shows the eigenvalues of the original system, lienarized around the tank levels of 1 m.}
     \label{fig:eigs}
 \end{figure}
 

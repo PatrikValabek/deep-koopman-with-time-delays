@@ -22,15 +22,13 @@ colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 line_cycler = cycler("color", colors) + cycler("linestyle", line_styles)
 
 # Apply the combined cycler to the axes
-plt.rcParams.update(
-    {
-        "text.usetex": True,
-        "font.family": "CMU Serif",
-        "font.serif": "CMU Serif",
-        "axes.prop_cycle": line_cycler,
-        "axes.grid": True,
-    }
-)
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "CMU Serif",
+    "font.serif": "CMU Serif",
+    "axes.prop_cycle": line_cycler,
+    "axes.grid": True,
+})
 
 
 def set_size(
@@ -85,6 +83,45 @@ def set_size(
     return (fig_width_in * 1.2, fig_height_in * 1.2)
 
 
+def plot_results(U_t: np.ndarray, Ys: dict[str, np.ndarray]):
+    """
+    Plot the results of the eDMD model predictions and the input flow rate.
+
+    Parameters:
+    U_t (ndarray): Input flow rate values.
+    **Ys (dict of ndarrays): True water level values and predicted water level values, where keys are labels.
+    """
+    fig, axs = plt.subplots(
+        3, 1, figsize=set_size("ieee", subplots=(3, 1)), sharex=True
+    )
+    if not isinstance(axs, np.ndarray):
+        axs = np.array([axs])
+
+    # Sort Ys to ensure noisy data is plotted first
+    sorted_Ys = sorted(Ys.items(), key=lambda x: x[0] != "Noisy")
+
+    for label, ys in sorted_Ys:
+        for i, (ax, y) in enumerate(zip(axs, ys.T), start=1):
+            if label == "Noisy":
+                ax.plot(y, label=label, color="gray", alpha=0.5)
+                ax.set_prop_cycle(None)  # Reset color cycler
+            else:
+                ax.plot(y, label=label)
+            ax.set_ylabel(f"Water Level in Tank {i} " + "$\\mathrm{(m)}$")
+            ax.ticklabel_format(style="sci", axis="y", scilimits=(2, 1))
+
+    axs[2].plot(U_t)
+    axs[2].set_ylabel("Input Flow Rate $\\mathrm{(m^3~s^{-1})}$")
+    axs[2].set_xlabel("Time (-)")
+    axs[2].ticklabel_format(style="sci", axis="y", scilimits=(2, 1))
+
+    axs[0].legend()
+
+    fig.tight_layout()
+
+    return fig
+
+
 def plot_eigs(
     eigs,
     amplitudes: np.ndarray | None = None,
@@ -117,7 +154,7 @@ def plot_eigs(
     max_eig_ms = 10
     circle_color = "tab:blue"
     rank_color = "tab:orange"
-    main_colors = ["tab:red", "tab:green", "tab:purple"]
+    main_colors = ["tab:orange", "tab:orange", "tab:orange"]
 
     if ax is None:
         _, eig_ax = plt.subplots(1, 1, figsize=set_size("ieee"))

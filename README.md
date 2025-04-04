@@ -42,74 +42,74 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
 
 ### 🔍 Technical & Conceptual Comments
 
-- **PV1**: ✅ Clarify the definition and position of `x_k` in Section 2.A.  
-  - 🔲 Fix Fig. 1 showing `x_{k-1}` as last input.  
-  - 🔲 Formally define the sequence `H`.  
+* **PV1**: ✅ Clarify the definition and position of `x_k` in Section 2.A.  
+  * 🔲 Fix Fig. 1 showing `x_{k-1}` as last input.  
+  * 🔲 Formally define the sequence `H`.  
   _Difficulty: Medium_
 
-- **PV2**: ✅ Include `h_k` in function `g` throughout Section 2.B.  
-  - 🔲 Revise equations (3)–(6) to reflect:  
+* **PV2**: ✅ Include `h_k` in function `g` throughout Section 2.B.  
+  * 🔲 Revise equations (3)–(6) to reflect:  
     `x_k - g^{-1}(g(x_k,h_k))` and  
     `h_k = f(x_k, ..., x_{k-nH}, u_k, ..., u_{k-nH})`  
   _Difficulty: Important conceptual fix_
 
-- **MW3**: Improve clarity of **Figure 3**.  
-  - 🔲 Explain if it shows eigenvalues of linearized system.  
-  - 🔲 Clarify cross colors in lower subplots.
+* **MW3**: ✅ Improve clarity of **Figure 3**.  
+  * 🔲 Explain if it shows eigenvalues of linearized system.  
+  * 🔲 Clarify cross colors in lower subplots.
 
-- **PV4**: ✅ Add brief explanation on solving optimization problem (7).  
-  - 🔲 Include weight values used.
+* **PV4**: ✅ Add brief explanation on solving optimization problem (7).  
+  * 🔲 Include weight values used.
 
-- **PV5**: ✅ Define and justify the value of the sequence length `H`.  
-  - 🔲 Was `H = 20` used to match system time delay?
+* **PV5**: ✅ Define and justify the value of the sequence length `H`.  
+  * 🔲 Was `H = 20` used to match system time delay?
 
-- **PV6**: ✅ Explain testing initialization.  
-  - 🔲 Was ground truth sequence used for the first LSTM prediction?
+* **PV6**: ✅ Explain testing initialization.  
+  * 🔲 Was ground truth sequence used for the first LSTM prediction?
 
-- **MW7**: Improve comparison methodology.  
-  - 🔲 Compare Figure 2 results with ground truth (simulated from Eq. 8), not noisy data.  
-  - 🔲 Add metric vs. ground truth.  
+* **MW7**: ✅ Improve comparison methodology.  
+  * 🔲 Compare Figure 2 results with ground truth (simulated from Eq. 8), not noisy data.  
+  * 🔲 Add metric vs. ground truth.  
 
-- **PV8**:✅  Evaluation metrics clarification.  
-  - 🔲 Show **SAD** in Table 1 (not just **MAE**). or delete sad from text :D
+* **PV8**:✅  Evaluation metrics clarification.  
+  * 🔲 Show **SAD** in Table 1 (not just **MAE**). or delete sad from text :D
 
-- **PV9**: ✅ Fix cross-references.  
-  - 🔲 Correct output trajectory loss reference (end of page 3). 
+* **PV9**: ✅ Fix cross-references.  
+  * 🔲 Correct output trajectory loss reference (end of page 3).
 
 ## ✅ 2nd Review
 
 ### 🌀 Clarification & Explanation Needed
 
-- **MW**: Further explain **eigenvalue analysis in Fig. 3**.  
-  - 🔲 Clarify what the “original” eigenvalues refer to.  
-  - 🔲 Explain color and size coding in the complex plane.
+* **MW**: ✅ Further explain **eigenvalue analysis in Fig. 3**.  
+  * 🔲 Clarify what the “original” eigenvalues refer to.  
+  * 🔲 Explain color and size coding in the complex plane.
 
 ### 📝 Grammatical & Style Suggestions
 
-- **PV1**:✅In Abstract, introduce **eDMD** like LSTM.
+* **PV1**:✅In Abstract, introduce **eDMD** like LSTM.
 
-- **PV4**:✅  Reword “we aim to find matrices in state equation covering …” — currently unclear.
+* **PV4**:✅  Reword “we aim to find matrices in state equation covering …” — currently unclear.
 
-- **PV5**:✅ In Equation (2), verify upper sum limit `n`.  
-  - 🔲 Is it related to `z_k` dimension or number of snapshots (`m`)?
+* **PV5**:✅ In Equation (2), verify upper sum limit `n`.  
+  * 🔲 Is it related to `z_k` dimension or number of snapshots (`m`)?
 
-- **PV6**:?ask MK? Fix grammar:  
-  - 🔲 “These loss functions are described in the [11].” → missing article or rephrase.
+* **PV6**:?ask MK? Fix grammar:  
+  * 🔲 “These loss functions are described in the [11].” → missing article or rephrase.
 
-- **PV8**: ✅ Clarify Lifting Network explanation.  
-  - 🔲 Sentence: “two layers, 60 neurons, resulting in 40 states” — split and explain transformation.
+* **PV8**: ✅ Clarify Lifting Network explanation.  
+  * 🔲 Sentence: “two layers, 60 neurons, resulting in 40 states” — split and explain transformation.
 
-- **PV9**:✅ Fix table reference:  
-  - 🔲 “Table III-A” incorrect.  
-  - 🔲 Shorten the table caption.  
-  - 🔲 Add **SAD** metric (if missing).
+* **PV9**:✅ Fix table reference:  
+  * 🔲 “Table III-A” incorrect.  
+  * 🔲 Shorten the table caption.  
+  * 🔲 Add **SAD** metric (if missing).
 
 ### 🌟 Optional Suggestions
 
-- **MW11 (Optional)**:  
-  - 🔲 Add noise-free ground truth to **Fig. 2**.  
-  - 🔲 Include detail view on time steps where **input flow rate changes** to show **time delay**.
+* **MW11 (Optional)**:  
+  * 🔲 Add noise-free ground truth to **Fig. 2**.  
+  * 🔲 Include detail view on time steps where **input flow rate changes** to show **time delay**.
 
-- **MW12**:  
-  - 🔲 Explain eigenvalue color/size coding in Fig. 3.  
-  - 💡 Option: Make all markers same color/size to simplify and avoid the need for detailed explanation.
+* **MW12**:  
+  * 🔲 Explain eigenvalue color/size coding in Fig. 3.  
+  * 💡 Option: Make all markers same color/size to simplify and avoid the need for detailed explanation.
