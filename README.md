@@ -70,7 +70,7 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
   - 🔲 Compare Figure 2 results with ground truth (simulated from Eq. 8), not noisy data.  
   - 🔲 Add metric vs. ground truth.  
 
-- **MW8**: Evaluation metrics clarification.  
+- **PV8**:✅  Evaluation metrics clarification.  
   - 🔲 Show **SAD** in Table 1 (not just **MAE**). or delete sad from text :D
 
 - **PV9**: ✅ Fix cross-references.  
@@ -86,21 +86,21 @@ For any questions or issues, please contact Patrik Valábek at [patrik.valabek@s
 
 ### 📝 Grammatical & Style Suggestions
 
-- **MW1**: In Abstract, introduce **eDMD** like LSTM.
+- **PV1**:✅In Abstract, introduce **eDMD** like LSTM.
 
-- **MW4**: Reword “we aim to find matrices in state equation covering …” — currently unclear.
+- **PV4**:✅  Reword “we aim to find matrices in state equation covering …” — currently unclear.
 
-- **MW5**: In Equation (2), verify upper sum limit `n`.  
+- **PV5**:✅ In Equation (2), verify upper sum limit `n`.  
   - 🔲 Is it related to `z_k` dimension or number of snapshots (`m`)?
 
 - **PV6**:?ask MK? Fix grammar:  
   - 🔲 “These loss functions are described in the [11].” → missing article or rephrase.
 
-- **PV8**: ✅Clarify Lifting Network explanation.  
+- **PV8**: ✅ Clarify Lifting Network explanation.  
   - 🔲 Sentence: “two layers, 60 neurons, resulting in 40 states” — split and explain transformation.
 
-- **MW9**: Fix table reference:  
-  - ✅ “Table III-A” incorrect.  
+- **PV9**:✅ Fix table reference:  
+  - 🔲 “Table III-A” incorrect.  
   - 🔲 Shorten the table caption.  
   - 🔲 Add **SAD** metric (if missing).
 

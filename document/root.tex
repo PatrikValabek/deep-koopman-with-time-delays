@@ -59,8 +59,8 @@
 \begin{abstract}
     %Nonlinear dynamical systems with input delays pose significant challenges for prediction, estimation, and control due to their inherent complexity and the impact of delays on system behavior. Traditional linear control techniques often fail in these contexts, necessitating innovative approaches. This paper presents a dictionary-free method for learning linear representations of nonlinear systems with input delays using deep neural networks (DNNs). Leveraging the Koopman operator framework, which globally linearizes nonlinear dynamics, we address the limitations of extended Dynamic Mode Decomposition (eDMD). While eDMD enhances model capability with nonlinear measurements, its reliance on predefined dictionaries constrains its accuracy. Our approach uses DNNs to automatically generate and update nonlinear transformations, enabling the learning of high-fidelity Koopman operator models. Additionally, we incorporate time-delayed embeddings to account for input delays, ensuring precise modeling and improved long-term forecasting of nonlinear dynamics. Our method provides a robust framework for modeling nonlinear systems with input delays, offering significant advancements over existing techniques.
     Nonlinear dynamical systems with input delays pose significant challenges for prediction, estimation, and control due to their inherent complexity and the impact of delays on system behavior. Traditional linear control techniques often fail in these contexts, necessitating innovative approaches.
-    This paper introduces a novel approach to approximate the Koopman operator using an LSTM-enhanced Deep Koopman model, enabling linear representations of nonlinear systems with time delays. By incorporating Long Short-Term Memory (LSTM) layers, the proposed framework captures historical dependencies and efficiently encodes time-delayed system dynamics into a latent space. Unlike traditional eDMD approaches that rely on predefined dictionaries, the LSTM-enhanced Deep Koopman model is dictionary-free, which mitigates the problems with the underlying dynamics being known and incorporated into the dictionary.
-    Quantitative comparisons with extended Dynamic Mode Decomposition (eDMD) on a simulated system demonstrate highly significant performance gains in prediction accuracy in cases where the true nonlinear dynamics are unknown and achieve comparable results to eDMD with known dynamics of a system.
+    This paper introduces a novel approach to approximate the Koopman operator using an LSTM-enhanced Deep Koopman model, enabling linear representations of nonlinear systems with time delays. By incorporating Long Short-Term Memory (LSTM) layers, the proposed framework captures historical dependencies and efficiently encodes time-delayed system dynamics into a latent space. Unlike traditional extended Dynamic Mode Decomposition (eDMD) approaches that rely on predefined dictionaries, the LSTM-enhanced Deep Koopman model is dictionary-free, which mitigates the problems with the underlying dynamics being known and incorporated into the dictionary.
+    Quantitative comparisons with extended eDMD on a simulated system demonstrate highly significant performance gains in prediction accuracy in cases where the true nonlinear dynamics are unknown and achieve comparable results to eDMD with known dynamics of a system.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -95,7 +95,7 @@ Section~\ref{sec:results} presents the results of our approach, providing quanti
 % alebo Data-Driven Koopman Operator Approximation
 
 The foundation of the proposed approach lies in approximating the Koopman operator, a linear operator that represents the dynamics of nonlinear systems in an embedded space.
-Formally, we aim to find matrices in state equation covering
+Formally, we aim to find the underlying linear dynamics in state space equation covering
 \begin{equation}
     z_{k+1} = A_\mathcal{K}z_k + B_\mathcal{K}u_k.
 \end{equation}
@@ -103,10 +103,10 @@ Formally, we aim to find matrices in state equation covering
 where the Koopman matrices \(A_\mathcal{K} \) and \( B_\mathcal{K} \) are the solution for the optimization problem:
 
 \begin{equation}
-    \mathrm{argmin}_{\mathcal{K}} \sum_{k=0}^{n} \| z_{k+1} - A_\mathcal{K}z_{k} - B_\mathcal{K}u_k \|_F,
+    \mathrm{argmin}_{\mathcal{K}} \sum_{k=0}^{m} \| z_{k+1} - A_\mathcal{K}z_{k} - B_\mathcal{K}u_k \|_F,
 \end{equation}
 
-where \( z_{k} \in \mathbb{R}^n\) represent the vector of lifted states and \( z_{k+1} \) corresponding states in next step, respectively, and \( \|\cdot \| _F\) denotes the Frobenius norm. This formulation provides the basis for deriving a linear approximation of the underlying dynamics, even for systems with time delays.
+where \( z_{k} \in \mathbb{R}^n\) represent the vector of lifted states and \( z_{k+1} \) corresponding states in next step, respectively, \( \|\cdot \| _F\) denotes the Frobenius norm and \(m\) denotes the number of data snapshots. This formulation provides the basis for deriving a linear approximation of the underlying dynamics, even for systems with time delays.
 
 
 The proposed approach leveraging the power of a long short-term memory (LSTM) layer encoding the history of a system is a novel approach for data-based identification of approximation of the Koopman operator. It can accurately identify the linear model for processes with time delays. Its basis comes from the Deep Koopman Operator (DKO)~\cite{lusch2018deep} approach.
@@ -223,10 +223,10 @@ Figure~\ref{fig:results:two_tanks_results} shows the predicted and actual water 
     \label{fig:results:two_tanks_results}
 \end{figure}
 
-The performance of the models was evaluated using the mean absolute error (MAE) and the sum of the absolute differences (SAD) between the predicted and actual water levels in tanks 1 and 2. The results are presented in Table~\ref{tab:results:two_tanks_results}. LSTM-enhanced Deep Koopman achieved a significantly lower MAE and SAD compared to eDMD without square root, indicating its superior performance in modeling the system with input delays in cases where true nonlinear dynamics are not known. Meanwhile, LSTM-enhanced Deep Koopman provides comparable results to eDMD with square root, demonstrating its effectiveness in capturing the system's dynamics without prior knowledge of the true nonlinear terms, demonstrating the capabilities of the LSTM-enhanced Deep Koopman model in modeling nonlinear systems with input delays. The degradation in performance was, in this case, slightly above \( 6\% \) in both MAE and SAD\@. It is important to note that the LSTM-enhanced Deep Koopman model is composed of a smaller number of lifted states compared to eDMD\@. This is thanks to the fact that the history of the system is encoded and does not need to be introduced whole to the model during lifted states generation. This results in an almost \(4\) times smaller Koopman matrix, which is computationally less expensive to compute and store.
+The performance of the models was evaluated using the mean absolute error (MAE) between the predicted and actual water levels in tanks 1 and 2. The results are presented in Table~\ref{tab:results:two_tanks_results}. LSTM-enhanced Deep Koopman achieved a significantly lower MAE compared to eDMD without square root, indicating its superior performance in modeling the system with input delays in cases where true nonlinear dynamics are not known. Meanwhile, LSTM-enhanced Deep Koopman provides comparable results to eDMD with square root, demonstrating its effectiveness in capturing the system's dynamics without prior knowledge of the true nonlinear terms, demonstrating the capabilities of the LSTM-enhanced Deep Koopman model in modeling nonlinear systems with input delays. The degradation in performance was, in this case, slightly above \( 6\% \) in MAE. It is important to note that the LSTM-enhanced Deep Koopman model is composed of a smaller number of lifted states compared to eDMD\@. This is thanks to the fact that the history of the system is encoded and does not need to be introduced whole to the model during lifted states generation. This results in an almost \(4\) times smaller Koopman matrix, which is computationally less expensive to compute and store.
 
 \begin{table}[htbp]
-    \caption{Performance comparison of LSTM-enhanced Deep Koopman and eDMD on the two tank system with input delays with best performance normed to \(100\% \)}
+    \caption{Performance comparison of used methods with the best performance normed to \(100\% \)}
     \label{tab:results:two_tanks_results}
     \begin{center}
         \begin{tabular}{c S[table-format=3.2] }
