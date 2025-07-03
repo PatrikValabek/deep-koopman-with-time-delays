@@ -94,6 +94,12 @@ class Hankel(BaseEstimator, TransformerMixin):
            [ 1.,  2.,  3.],
            [ 2.,  3.,  4.],
            [ 3.,  4.,  5.]])
+    >>> hankel(X, 3, return_partial="copy")
+    array([[1., 1., 1.],
+           [1., 1., 2.],
+           [1., 2., 3.],
+           [2., 3., 4.],
+           [3., 4., 5.]])
     >>> X = np.array([[1., 2., 3., 4., 5.], [9., 8., 7., 6., 5.]]).T
     >>> hankel(X, 3, return_partial=False)
     array([[1., 9., 2., 8., 3., 7.],
@@ -248,39 +254,33 @@ class Hankel(BaseEstimator, TransformerMixin):
             X.shape[0] + self.hn - 1 if not self.return_partial else X.shape[0]
         )
 
-        # Initialize the original matrix
-        original = np.zeros((rows, n))
+        if not self.return_partial:
+            # Initialize the original matrix
+            original = np.zeros((rows, n))
 
-        # For each column in the original matrix
-        for i in range(n):
-            # Extract the corresponding columns from the Hankel matrix
-            hankel_cols = X[:, i::n]
+            # For each column in the original matrix
+            for i in range(n):
+                # Extract the corresponding columns from the Hankel matrix
+                hankel_cols = X[:, i::n]
 
-            # Reconstruct the original column
-            if not self.return_partial:
+                # Reconstruct the original column
                 # If we didn't return partial data, we need to add rows at the beginning
                 for j in range(self.hn):
                     original[j : rows - (self.hn - j - 1), i] += hankel_cols[
                         :, j
                     ]
-            else:
-                # If we returned partial data, we need to handle NaN values
-                for j in range(self.hn):
-                    valid_indices = ~np.isnan(hankel_cols[:, j])
-                    original[j : j + np.sum(valid_indices), i] += hankel_cols[
-                        valid_indices, j
-                    ]
+            # Normalize by the number of times each element was added
+            counts = np.zeros((rows, n))
+            for j in range(self.hn):
+                if not self.return_partial:
+                    counts[j : rows - (self.hn - j - 1), :] += 1
+                else:
+                    valid_rows = rows - j
+                    counts[j : j + valid_rows, :] += 1
 
-        # Normalize by the number of times each element was added
-        counts = np.zeros((rows, n))
-        for j in range(self.hn):
-            if not self.return_partial:
-                counts[j : rows - (self.hn - j - 1), :] += 1
-            else:
-                valid_rows = rows - j
-                counts[j : j + valid_rows, :] += 1
-
-        original = original / counts
+            original = original / counts
+        else:
+            original = X[:, -n:]
 
         if self.feature_names_in_ is not None:
             return pd.DataFrame(
